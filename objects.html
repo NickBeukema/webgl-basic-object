@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Objects</title>
+  <script src="webgl-utils.js"></script>
+  <script src="shader-utils.js"></script>
+  <script src="gl-matrix-min.js"></script>
+
+  <script src="models/Cone.js"></script>
+  <script src="models/TruncCone.js"></script>
+  <script src="models/Cube.js"></script>
+  <script src="models/Sphere.js"></script>
+  <script src="models/IcoSphere.js"></script>
+  <script src="models/RecursiveSphere2.js"></script>
+  <script src="models/Ring.js"></script>
+  <script src="models/Torus.js"></script>
+
+  <script src="shape-render.js"></script>
+  <style>
+    #controls {
+      padding: 16px;
+    }
+    li {
+      list-style-type: none;
+    }
+    .param-group {
+      border: 1px solid black;
+      padding: 8px;
+      margin: 8px;
+    }
+  </style>
+</head>
+<body onload="main()">
+<div id="controls">
+
+  <select id="menu">
+    <option value="0">Cone</option>
+    <option value="1">Cylinder</option>
+    <option value="2">Cube</option>
+    <option value="3">Sphere (Lat/Lon)</option>
+    <option value="4">Recursive Sphere</option>
+    <option value="5">Torus</option>
+    <option value="6">Ring</option>
+    <option value="7">Icosphere</option>
+  </select>
+
+  <button id="insert">Insert</button>
+
+  <!-- Notice that each div below is hidden by default -->
+  <div class="param-group" hidden>
+    Cone parameters:
+    <ul>
+      <li>Height 0.2 <input id="cone-height" class="slider" type="range" min="0.2" max="0.9" step="0.05" value="0.5"> 0.9 -- <span id="cone-height-value"></span></li>
+      <li>Radius 0.2 <input id="cone-radius" class="slider" type="range" min="0.2" max="0.8" step="0.05" value="0.3"> 0.8 -- <span id="cone-radius-value"></span></li>
+      <li>Sub division 6 <input id="cone-subdiv" class="slider" type="range" min="6" max="30" step="1" value="12"> 30 -- <span id="cone-subdiv-value"></span></li>
+      <li>vertical stacks 1 <input id="vert-stacks" class="slider" type="range" min="1" max="100" step="1" value="10"> 100 -- <span id="vert-stacks-value"></span></li>
+    </ul>
+  </div>
+  <div class="param-group" hidden>
+    Cylinder parameters:
+    <ul>
+      <li>Height 0.2 <input id="trunc-cone-height" class="slider" type="range" min="0.2" max="0.6" step="0.05" value="0.5"> 0.6 -- <span id="trunc-cone-height-value"></span></li>
+      <li>Top Radius 0 <input id="trunc-cone-radius-top" class="slider" type="range" min="0.0" max="0.8" step="0.05" value="0.3"> 0.8 -- <span id="trunc-cone-radius-top-value"></span></li>
+      <li>Bottom Radius 0.2 <input id="trunc-cone-radius-bottom" class="slider" type="range" min="0.2" max="0.8" step="0.05" value="0.3"> 0.8 -- <span id="trunc-cone-radius-bottom-value"></span></li>
+      <li>Sub Division 6 <input id="trunc-cone-subdiv" class="slider" type="range" min="6" max="100" step="1" value="6"> 100 -- <span id="trunc-cone-subdiv-value"></span></li>
+      <li>stacks 1 <input id="trunc-cone-stacks" class="slider" type="range" min="1" max="100" step="1" value="3"> 100 -- <span id="trunc-cone-stacks-value"></span></li>
+    </ul>
+  </div>
+  <div class="param-group" hidden>
+    Cube parameters:
+    <ul>
+      <li>Size 0.5 <input id="cube-size" class="slider" type="range" min="0.5" max="1" step="0.1" value="0.7"> 1 -- <span id="cube-size-value"></span></li>
+      <li>Sub Division 1 <input id="cube-subdiv" class="slider" type="range" min="1" max="10" step="1" value="2"> 10 -- <span id="cube-subdiv-value"></span></li>
+    </ul>
+  </div>
+  <div class="param-group" hidden>
+    Sphere parameters:
+      <ul>
+        <li>Radius 0.2 <input id="sphere-radius" class="slider" type="range" min="0.2" max="0.9" step="0.05" value="0.3"> 0.9 -- <span id="sphere-radius-value"></span></li>
+        <li>Latitude Lines 2 <input id="sphere-lat" class="slider" type="range" min="2" max="100" step="1" value="15"> 100 -- <span id="sphere-lat-value"></span></li>
+        <li>Longitude Lines 2 <input id="sphere-long" class="slider" type="range" min="2" max="100" step="1" value="15"> 100 -- <span id="sphere-long-value"></span></li>
+      </ul>
+  </div>
+  <div class="param-group" hidden>
+    Recursive Sphere parameters:
+      <ul>
+        <li>Radius 0.2 <input id="recursive-sphere-radius" class="slider" type="range" min="0.2" max="0.9" step="0.05" value="0.3"> 0.9 -- <span id="recursive-sphere-radius-value"></span></li>
+        <li>RecursionLevel 0 <input id="sphere-recursion" class="slider" type="range" min="0.0" max="6.0" step="1" value="0"> 6 -- <span id="sphere-recursion-value"></span></li>
+      </ul>
+  </div>
+  <div class="param-group" hidden>
+    Torus parameters:
+    <ul>
+      <li>Torus Radius 0.5 <input id="torus-radius" class="slider" type="range" min="0.5" max="0.7" step="0.05" value="0.5"> 0.7 -- <span id="torus-radius-value"></span></li>
+      <li>Tube Radius 0.1 <input id="torus-tube-radius" class="slider" type="range" min="0.1" max="0.3" step="0.05" value="0.2"> 0.3 -- <span id="torus-tube-radius-value"></span></li>
+      <li>Longitude Lines 4 <input id="torus-longitude-lines" class="slider" type="range" min="4" max="100" step="1" value="4"> 100 -- <span id="torus-longitude-lines-value"></span></li>
+      <li>Sub Division 6 <input id="torus-subdiv" class="slider" type="range" min="6" max="100" step="1" value="6"> 100 -- <span id="torus-subdiv-value"></span></li>
+    </ul>
+  </div>
+  <div class="param-group" hidden>
+    Ring parameters:
+    <ul>
+      <li>Inner Radius 0.1 <input id="ring-inner-radius" class="slider" type="range" min="0.1" max="0.5" step="0.05" value="0.3"> 0.5 -- <span id="ring-inner-radius-value"></span></li>
+      <li>Outer Radius 0.55 <input id="ring-outer-radius" class="slider" type="range" min="0.55" max="0.75" step="0.05" value="0.7"> 0.75 -- <span id="ring-outer-radius-value"></span></li>
+      <li>Height 0.1 <input id="ring-height" class="slider" type="range" min="0.1" max="0.7" step="0.1" value="0.3"> 0.7 -- <span id="ring-height-value"></span></li>
+      <li>Vertical Stacks 2 <input id="ring-vertical-stacks" class="slider" type="range" min="2" max="100" step="1" value="3"> 100 -- <span id="ring-vertical-stacks-value"></span></li>
+      <li>Sub Division 6 <input id="ring-subdiv" class="slider" type="range" min="6" max="100" step="1" value="6"> 100 -- <span id="ring-subdiv-value"></span></li>
+    </ul>
+  </div>
+  <div class="param-group" hidden>
+    Icosphere parameters:
+      <ul>
+        <li>RecursionLevel 0 <input id="icos-recursion" class="slider" type="range" min="0.0" max="6.0" step="1" value="0"> 6 -- <span id="icos-recursion-value"></span></li>
+      </ul>
+  </div>
+  <div>
+    <label>
+      Axis of rotation:
+      <input type="radio" name="rotateGroup" value="rotx" checked> X
+      <input type="radio" name="rotateGroup" value="roty"> Y
+      <input type="radio" name="rotateGroup" value="rotz"> Z
+    </label>
+  </div>
+  <div>
+    <button id="rotate">
+      Rotate
+    </button>
+    <button id="wireframe">
+      Wireframe
+    </button>
+  </div>
+</div>
+<canvas id="gl-canvas"></canvas>
+</body>
+</html>
