@@ -179,6 +179,9 @@ function createObject() {
       console.log(recursion);
       obj = new Icosphere(gl, recursion, wireframe);
       break;
+    case 8:
+      obj = new Tire(gl);
+      break;
   }
 }
 

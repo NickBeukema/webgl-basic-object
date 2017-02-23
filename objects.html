@@ -15,6 +15,7 @@
   <script src="models/RecursiveSphere2.js"></script>
   <script src="models/Ring.js"></script>
   <script src="models/Torus.js"></script>
+  <script src="object-models/Tire.js"></script>
 
   <script src="shape-render.js"></script>
   <style>
@@ -43,6 +44,7 @@
     <option value="5">Torus</option>
     <option value="6">Ring</option>
     <option value="7">Icosphere</option>
+    <option value="8">Tire</option>
   </select>
 
   <button id="insert">Insert</button>
@@ -112,6 +114,13 @@
     Icosphere parameters:
       <ul>
         <li>RecursionLevel 0 <input id="icos-recursion" class="slider" type="range" min="0.0" max="6.0" step="1" value="0"> 6 -- <span id="icos-recursion-value"></span></li>
+      </ul>
+  </div>
+
+  <!--Tire-->
+  <div class="param-group" hidden>
+    Tire parameters:
+      <ul>
       </ul>
   </div>
   <div>

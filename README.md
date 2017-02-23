@@ -2,7 +2,7 @@
 
 ## 3D Car created in WebGL
 
- - [ ] Wheel
+ - [ ] Wheel - Nick
  - [ ] Hood
  - [ ] Doors
  - [ ] Trunk
