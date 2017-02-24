@@ -2,12 +2,28 @@ class Car {
   /**
    * Create a 3D Car
    * @param {Object} gl         the current WebGL context
-   * @param {vec3}   col1    color #1 to use
-   * @param {vec3}   col2    color #2 to use
    */
   constructor (gl) {
-    this.cone = new Cone(gl, 0.3, 0.5, 30, 20, false);
-    this.cone2 = new Cone(gl, 0.3, 0.8, 30, 20, false);
+    let carWidth = 0.5;
+    let carLength = 0.8;
+
+    this.frontRightTire = new Tire(gl);
+    this.frontRightTireTranslate = mat4.create();
+    mat4.translate(this.frontRightTireTranslate, this.frontRightTireTranslate, vec3.fromValues(-carLength/2,-carWidth/2,0));
+
+    this.frontLeftTire = new Tire(gl);
+    this.frontLeftTireTranslate = mat4.create();
+    mat4.translate(this.frontLeftTireTranslate, this.frontLeftTireTranslate, vec3.fromValues(-carLength/2,carWidth/2,0));
+
+    this.rearRightTire = new Tire(gl);
+    this.rearRightTireTranslate = mat4.create();
+    mat4.translate(this.rearRightTireTranslate, this.rearRightTireTranslate, vec3.fromValues(carLength/2,carWidth/2,0));
+
+    this.rearLeftTire = new Tire(gl);
+    this.rearLeftTireTranslate = mat4.create();
+    mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(carLength/2,-carWidth/2,0));
+
+    this.tmp = mat4.create();
   }
 
   /**
@@ -20,7 +36,20 @@ class Car {
   draw(vertexAttr, colorAttr, modelUniform, coordFrame) {
     /* copy the coordinate frame matrix to the uniform memory in shader */
     gl.uniformMatrix4fv(modelUniform, false, coordFrame);
-    this.cone.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
-    this.cone2.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
+
+
+    mat4.mul(this.tmp, coordFrame, this.frontRightTireTranslate);
+    this.frontRightTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.frontLeftTireTranslate);
+    this.frontLeftTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearRightTireTranslate);
+    this.rearRightTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearLeftTireTranslate);
+    this.rearLeftTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    //this.cone2.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
   }
 }

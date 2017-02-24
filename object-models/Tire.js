@@ -1,13 +1,31 @@
 class Tire {
   /**
-   * Create a 3D Car
+   * Create a Tire
    * @param {Object} gl         the current WebGL context
-   * @param {vec3}   col1    color #1 to use
-   * @param {vec3}   col2    color #2 to use
    */
   constructor (gl) {
     let grey = vec3.fromValues(0.1,0.1,0.1);
-    this.rubber = new Torus(gl, 0.2, 0.05, 30, 20, false, grey, grey);
+    let lighterGrey = vec3.fromValues(0.2,0.2,0.2);
+    let white = vec3.fromValues(0.6,0.6,0.6);
+
+    let tireRotate = mat4.create();
+    mat4.rotateX(tireRotate, tireRotate, Math.PI/2);
+
+    this.rubber = new Torus(gl, 0.1, 0.02, 100, 100, false, grey, lighterGrey);
+    this.rubberTransform = tireRotate;
+
+    this.hubCap = new Sphere(gl, 0.1, 10, 10, false, white, white);
+
+    let hubCapScale = mat4.create();
+    mat4.scale(hubCapScale, hubCapScale, vec3.fromValues(1,1,0.2));
+
+    this.hubCapTransform = mat4.create();
+    mat4.mul(this.hubCapTransform, tireRotate, hubCapScale);
+
+
+    this.tireCenter = new Sphere(gl, 0.03, 10, 10, false, grey, grey)
+
+    this.tmp = mat4.create();
   }
 
   /**
@@ -20,6 +38,14 @@ class Tire {
   draw(vertexAttr, colorAttr, modelUniform, coordFrame) {
     /* copy the coordinate frame matrix to the uniform memory in shader */
     gl.uniformMatrix4fv(modelUniform, false, coordFrame);
-    this.rubber.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
+
+
+    mat4.mul(this.tmp, coordFrame, this.rubberTransform);
+    this.rubber.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.hubCapTransform);
+    this.hubCap.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    this.tireCenter.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
   }
 }
