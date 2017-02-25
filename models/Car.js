@@ -23,6 +23,10 @@ class Car {
     this.rearLeftTireTranslate = mat4.create();
     mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(carLength/2,-carWidth/2,0));
 
+    this.hood = new Hood(gl);
+    this.hoodTranslate = mat4.create();
+    mat4.translate(this.hoodTranslate, this.hoodTranslate, vec3.fromValues(-carLength/1.85,0 ,.2));
+
     this.tmp = mat4.create();
   }
 
@@ -49,6 +53,9 @@ class Car {
 
     mat4.mul(this.tmp, coordFrame, this.rearLeftTireTranslate);
     this.rearLeftTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.hoodTranslate);
+    this.hood.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     //this.cone2.draw(vertexAttr, colorAttr, modelUniform, coordFrame);
   }
