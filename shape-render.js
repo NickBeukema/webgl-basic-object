@@ -182,6 +182,9 @@ function createObject() {
     case 8:
       obj = new Tire(gl);
       break;
+    case 9:
+      obj = new Hood(gl);
+      break;
   }
 }
 
