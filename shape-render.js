@@ -185,6 +185,9 @@ function createObject() {
     case 9:
       obj = new Hood(gl);
       break;
+    case 10:
+      obj = new Bumper(gl);
+      break;
   }
 }
 
