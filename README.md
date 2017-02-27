@@ -8,7 +8,7 @@
  - [ ] Trunk
  - [ ] Side above front wheels
  - [ ] Side above back wheels
- - [ ] Top
+ - [ ] Top - Nick
  - [x] Front bumper
  - [ ] Back bumper
  - [ ] Front windshield
