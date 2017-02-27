@@ -11,7 +11,7 @@ class TruncCone {
    * @param {vec3}   col1           color #1 to use
    * @param {vec3}   col2           color #2 to use
    */
-  constructor (gl, radiusBottom, radiusTop, height, subDiv, stacks = 1, primitive1, primitive2, col1, col2) {
+  constructor (gl, radiusBottom, radiusTop, height, subDiv, stacks = 1, col1, col2) {
     /* if colors are undefined, generate random colors */
     if (typeof col1 === "undefined") col1 = vec3.fromValues(Math.random(), Math.random(), Math.random());
     if (typeof col2 === "undefined") col2 = vec3.fromValues(Math.random(), Math.random(), Math.random());
@@ -65,7 +65,7 @@ class TruncCone {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bottomIdxBuff);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, Uint16Array.from(bottomIndex), gl.STATIC_DRAW);
 
-    this.indices.push({"primitive": primitive1, "buffer": this.bottomIdxBuff, "numPoints": bottomIndex.length});
+    this.indices.push({"primitive": gl.TRIANGLE_FAN, "buffer": this.bottomIdxBuff, "numPoints": bottomIndex.length});
 
     // Generate side of stacks
     for(let i = 0; i < stacks; i ++) {
@@ -92,7 +92,7 @@ class TruncCone {
       this.sideIdxBuff = gl.createBuffer();
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.sideIdxBuff);
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, Uint16Array.from(sideIndex), gl.STATIC_DRAW);
-      this.indices.push({"primitive": primitive2, "buffer": this.sideIdxBuff, "numPoints": sideIndex.length});
+      this.indices.push({"primitive": gl.TRIANGLE_STRIP, "buffer": this.sideIdxBuff, "numPoints": sideIndex.length});
     }
 
 
@@ -108,7 +108,7 @@ class TruncCone {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.topIdxBuff);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, Uint16Array.from(topIndex), gl.STATIC_DRAW);
 
-    this.indices.push({"primitive": primitive1, "buffer": this.topIdxBuff, "numPoints": topIndex.length});
+    this.indices.push({"primitive": gl.TRIANGLE_FAN, "buffer": this.topIdxBuff, "numPoints": topIndex.length});
   }
 
   /**

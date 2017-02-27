@@ -5,9 +5,15 @@ class Car {
    */
   constructor (gl) {
     let carWidth = 0.5;
-    let carLength = 0.8;
+    let carLength = 1.2;
 
-    let tirePosX = (carLength/2.0)// * .90; // 10% length away from end
+
+    //
+    // Tires
+    //
+
+
+    let tirePosX = (carLength/2.0) * .80;
     let tirePosY = (carWidth/2.0);
 
 
@@ -29,7 +35,7 @@ class Car {
 
 
     //
-    // Car front hood
+    // Front hood
     //
 
     this.hood = new Hood(gl);
@@ -51,13 +57,22 @@ class Car {
 
 
     //
-    // Car front bumper
+    // Front bumper
     //
 
     this.frontBumper = new Bumper(gl);
     this.frontBumperTranslate = mat4.create();
     mat4.translate(this.frontBumperTranslate, this.frontBumperTranslate, vec3.fromValues(-carLength/2 - 0.2 + 0.02, 0, 0.05));
 
+
+    //
+    // Roof
+    //
+
+    this.roof = new Roof(gl);
+    this.roofTransform = mat4.create();
+    let roofTranslateVec = vec3.fromValues(0,0,0.5);
+    mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
 
 
 
@@ -94,6 +109,9 @@ class Car {
 
     mat4.mul(this.tmp, coordFrame, this.frontBumperTranslate);
     this.frontBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.roofTransform);
+    this.roof.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
   }
 }
