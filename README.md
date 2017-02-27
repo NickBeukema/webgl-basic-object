@@ -3,11 +3,11 @@
 ## 3D Car created in WebGL
 
  - [x] Wheel
- - [ ] Hood - Kevin
+ - [x] Hood
  - [x] Front bumper
- - [ ] Back bumper
+ - [x] Back bumper
  - [x] Roof
- - [ ] Trunk - Nick
+ - [x] Trunk
  - [ ] Doors
  - [ ] Side above front wheels
  - [ ] Side above back wheels
