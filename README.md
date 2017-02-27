@@ -9,7 +9,7 @@
  - [ ] Side above front wheels
  - [ ] Side above back wheels
  - [ ] Top
- - [ ] Front bumper - Nick
+ - [x] Front bumper
  - [ ] Back bumper
  - [ ] Front windshield
  - [ ] Rear windshield
