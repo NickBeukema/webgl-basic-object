@@ -45,7 +45,7 @@ class Car {
 
     mat4.translate(hoodTranslate, hoodTranslate, hoodTranslateVec);
 
-
+    // TODO: refactor the rotate into the shape
     let hoodRotate = mat4.create();
     let hoodRotateRad = -Math.PI/10;
 
@@ -75,7 +75,22 @@ class Car {
     mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
 
 
+    //
+    // Trunk
+    //
 
+    this.trunk = new Trunk(gl);
+    this.trunkTransform = mat4.create();
+    let trunkTransformVec = vec3.fromValues(0.55,0,0.2);
+    mat4.translate(this.trunkTransform, this.trunkTransform, trunkTransformVec);
+
+    //
+    // Rear bumper
+    //
+
+    this.rearBumper = new Bumper(gl);
+    this.rearBumperTranslate = mat4.create();
+    mat4.translate(this.rearBumperTranslate, this.rearBumperTranslate, vec3.fromValues(carLength/2 + 0.12, 0, 0.05));
 
     this.tmp = mat4.create();
   }
@@ -113,5 +128,10 @@ class Car {
     mat4.mul(this.tmp, coordFrame, this.roofTransform);
     this.roof.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
+    mat4.mul(this.tmp, coordFrame, this.trunkTransform);
+    this.trunk.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearBumperTranslate);
+    this.rearBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
   }
 }
