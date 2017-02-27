@@ -4,12 +4,13 @@
 
  - [x] Wheel
  - [ ] Hood - Kevin
- - [ ] Doors
- - [ ] Trunk
- - [ ] Side above front wheels
- - [ ] Side above back wheels
- - [ ] Top - Nick
  - [x] Front bumper
  - [ ] Back bumper
+ - [x] Roof
+ - [ ] Trunk - Nick
+ - [ ] Doors
+ - [ ] Side above front wheels
+ - [ ] Side above back wheels
+ - [ ] Glass
  - [ ] Front windshield
  - [ ] Rear windshield
