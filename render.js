@@ -1,25 +1,34 @@
 /**
  * Created by Nick Beukema and Kevin Anderson
  */
-let modelMat = mat4.create();
-let canvas;
-var currRotationAxis = "rotx";
-var rotate = true;
-var wireframe = false;
-let posAttr, colAttr, modelUnif;
 var gl;
+let canvas;
+var textOut;
+var orthoProjMat, persProjMat, viewMat, topViewMat, carCF;
+var axisBuff, tmpMat;
+var globalAxes;
+
+let posAttr, colAttr, modelUnif;
+var projUnif, viewUnif;
+
+const IDENTITY = mat4.create();
 let obj;
+
+var coneSpinAngle;
+var shaderProg;
 
 function main() {
   canvas = document.getElementById("gl-canvas");
+  gl = WebGLUtils.create3DContext(canvas, null);
+  axisBuff = gl.createBuffer()
+  gl.bindBuffer(gl.ARRAY_BUFFER, axisBuff);
 
   /* setup window resize listener */
-  window.addEventListener('resize', resizeWindow);
+  window.addEventListener('resize', resizeHandler);
 
-  gl = WebGLUtils.create3DContext(canvas, null);
   ShaderUtils.loadFromFile(gl, "vshader.glsl", "fshader.glsl")
   .then (prog => {
-
+    shaderProg = prog;
     /* put all one-time initialization logic here */
     gl.useProgram (prog);
     gl.clearColor (0, 0, 0, 1);
@@ -27,21 +36,36 @@ function main() {
     gl.cullFace(gl.BACK);
     gl.enable (gl.DEPTH_TEST);
 
-    primitive1 = gl.POINTS;
-    primitive2 = gl.POINTS;
+    posAttr = gl.getAttribLocation(prog, "vertexPos");
+    colAttr = gl.getAttribLocation(prog, "vertexCol");
+    projUnif = gl.getUniformLocation(prog, "projection");
+    viewUnif = gl.getUniformLocation(prog, "view");
+    modelUnif = gl.getUniformLocation(prog, "modelCF");
+    gl.enableVertexAttribArray(posAttr);
+    gl.enableVertexAttribArray(colAttr);
+    orthoProjMat = mat4.create();
+    persProjMat = mat4.create();
+    viewMat = mat4.create();
+    topViewMat = mat4.create();
+    carCF = mat4.create();
+    tmpMat = mat4.create();
+    mat4.lookAt(viewMat,
+        vec3.fromValues(2, 2, 2), /* eye */
+        vec3.fromValues(0, 0, 0), /* focal point */
+        vec3.fromValues(0, 0, 1)); /* up */
+    mat4.lookAt(topViewMat,
+        vec3.fromValues(0,0,2),
+        vec3.fromValues(0,0,0),
+        vec3.fromValues(0,1,0)
+    );
+    gl.uniformMatrix4fv(modelUnif, false, carCF);
 
-    /* the vertex shader defines TWO attribute vars and ONE uniform var */
-    posAttr = gl.getAttribLocation (prog, "vertexPos");
-    colAttr = gl.getAttribLocation (prog, "vertexCol");
-    modelUnif = gl.getUniformLocation (prog, "modelCF");
-    gl.enableVertexAttribArray (posAttr);
-    gl.enableVertexAttribArray (colAttr);
-
-    currSelection = 0;
-    createObject();
-
+    globalAxes = new Axes(gl);
+    coneSpinAngle = 0;
+    
+    obj = new Car(gl);
     /* calculate viewport */
-    resizeWindow();
+    resizeHandler();
 
     /* initiate the render loop */
     render();
@@ -49,43 +73,49 @@ function main() {
 }
 
 function drawScene() {
-  gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+  globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
 
-  /* in the following three cases we rotate the coordinate frame by 1 degree */
-  if(rotate) {
-    switch (currRotationAxis) {
-      case "rotx":
-        mat4.rotateX(modelMat, modelMat, Math.PI / 180);
-        break;
-      case "roty":
-        mat4.rotateY(modelMat, modelMat, Math.PI / 180);
-        break;
-      case "rotz":
-        mat4.rotateZ(modelMat, modelMat, Math.PI / 180);
-    }
-  }
-
-  if (obj) {
-    obj.draw(posAttr, colAttr, modelUnif, modelMat);
+  if (typeof obj !== 'undefined') {
+      obj.draw(posAttr, colAttr, modelUnif, tmpMat);
   }
 }
 
 function render() {
-  drawScene();
+  gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+  draw3D();
+  drawTopView();
   requestAnimationFrame(render);
 }
 
-function createObject() {
-  mat4.identity(modelMat);
-  obj = new Car(gl);
+function resizeHandler() {
+  canvas.width = window.innerWidth;
+  canvas.height = 0.9 * window.innerHeight;
+  if (canvas.width > canvas.height) { /* landscape */
+    let ratio = 2 * canvas.height / canvas.width;
+    console.log("Landscape mode, ratio is " + ratio);
+    mat4.ortho(orthoProjMat, -3, 3, -3 * ratio, 3 * ratio, -5, 5);
+    mat4.perspective(persProjMat,
+      Math.PI/3,  /* 60 degrees vertical field of view */
+      1/ratio,    /* must be width/height ratio */
+      1,          /* near plane at Z=1 */
+      20);        /* far plane at Z=20 */
+  } else {
+    alert ("Window is too narrow!");
+  }
 }
 
-function resizeWindow() {
-  let w = 0.98 * window.innerWidth;
-  let h = 0.6 * window.innerHeight;
-  let size = Math.min(0.98 * window.innerWidth, 0.65 * window.innerHeight);
-  /* keep a square viewport */
-  canvas.width = size;
-  canvas.height = size;
-  gl.viewport(0, 0, size, size);
+function draw3D() {
+  /* We must update the projection and view matrices in the shader */
+  gl.uniformMatrix4fv(projUnif, false, persProjMat);
+  gl.uniformMatrix4fv(viewUnif, false, viewMat)
+  gl.viewport(0, 0, canvas.width/2, canvas.height);
+  drawScene();
+}
+
+function drawTopView() {
+  /* We must update the projection and view matrices in the shader */
+  gl.uniformMatrix4fv(projUnif, false, orthoProjMat);
+  gl.uniformMatrix4fv(viewUnif, false, topViewMat);
+  gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height);
+  drawScene();
 }
