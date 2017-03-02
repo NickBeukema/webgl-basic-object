@@ -9,8 +9,9 @@
  - [x] Roof
  - [x] Trunk
  - [ ] Doors
- - [ ] Side above front wheels
+ - [ ] Side above front wheels - Kevin
  - [ ] Side above back wheels
  - [ ] Glass
  - [ ] Front windshield
  - [ ] Rear windshield
+ - [x] Axes and Perspective View
