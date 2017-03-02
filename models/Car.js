@@ -7,11 +7,9 @@ class Car {
     let carWidth = 0.5;
     let carLength = 1.2;
 
-
     //
     // Tires
     //
-
 
     let tirePosX = (carLength/2.0) * .80;
     let tirePosY = (carWidth/2.0);
@@ -92,6 +90,15 @@ class Car {
     this.rearBumperTranslate = mat4.create();
     mat4.translate(this.rearBumperTranslate, this.rearBumperTranslate, vec3.fromValues(carLength/2 + 0.12, 0, 0.05));
 
+    //
+    // Front Fender
+    // 
+    
+
+    this.frontFender = new FrontFender(gl);
+    this.frontFenderTranslate = mat4.create();
+    mat4.translate(this.frontFenderTranslate, this.frontFenderTranslate, vec3.fromValues(carLength/2 + .08, carWidth/2 - .03,0));
+
     this.tmp = mat4.create();
   }
 
@@ -133,5 +140,8 @@ class Car {
 
     mat4.mul(this.tmp, coordFrame, this.rearBumperTranslate);
     this.rearBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.frontFenderTranslate);
+    this.frontFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
   }
 }
