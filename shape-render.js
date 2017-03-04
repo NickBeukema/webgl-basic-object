@@ -126,6 +126,7 @@ function createObject() {
   let innerRadius = null;
   let outerRadius = null;
 
+
   mat4.identity(modelMat);
   switch (currSelection) {
     case 0:

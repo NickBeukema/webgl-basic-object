@@ -8,6 +8,7 @@ class TruncCone {
    * @param {Number} radiusTop      radius of the cone top
    * @param {Number} height         height of the cone
    * @param {Number} subDiv         number of radial subdivision of the cone base
+   * @param {Number} stacks         number of vertical stacks to build the cone out of
    * @param {vec3}   col1           color #1 to use
    * @param {vec3}   col2           color #2 to use
    */
