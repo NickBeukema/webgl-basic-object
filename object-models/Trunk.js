@@ -9,14 +9,10 @@ class Trunk {
     this.trunk = new Cube(gl, .4, 4, false, white, white);
 
     let trunkScale = mat4.create();
-    mat4.scale(trunkScale, trunkScale, vec3.fromValues(0.9, 1, 0.1));
+    mat4.scale(trunkScale, trunkScale, vec3.fromValues(0.8, 1, 0.1));
 
     let trunkRotate = mat4.create();
-    mat4.rotateY(trunkRotate, trunkRotate, Math.PI/8);
-
-    this.trunkTransform = mat4.create();
-
-    mat4.mul(this.trunkTransform, trunkRotate, trunkScale);
+    this.trunkTransform = trunkScale;
 
     this.tmp = mat4.create();
   }

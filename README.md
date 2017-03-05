@@ -10,7 +10,7 @@
  - [x] Trunk
  - [ ] Doors
  - [ ] Side above front wheels - Kevin
- - [ ] Side above back wheels
+ - [x] Side above back wheels
  - [ ] Glass
  - [ ] Front windshield
  - [ ] Rear windshield

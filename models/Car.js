@@ -79,7 +79,7 @@ class Car {
 
     this.trunk = new Trunk(gl);
     this.trunkTransform = mat4.create();
-    let trunkTransformVec = vec3.fromValues(0.55,0,0.2);
+    let trunkTransformVec = vec3.fromValues(0.57,0,0.24);
     mat4.translate(this.trunkTransform, this.trunkTransform, trunkTransformVec);
 
     //
@@ -88,16 +88,20 @@ class Car {
 
     this.rearBumper = new Bumper(gl);
     this.rearBumperTranslate = mat4.create();
-    mat4.translate(this.rearBumperTranslate, this.rearBumperTranslate, vec3.fromValues(carLength/2 + 0.12, 0, 0.05));
+    mat4.translate(this.rearBumperTranslate, this.rearBumperTranslate, vec3.fromValues(carLength/2 + 0.11, 0, 0.13));
 
     //
-    // Front Fender
+    // Rear Fenders
     // 
     
 
-    this.frontFender = new FrontFender(gl);
-    this.frontFenderTranslate = mat4.create();
-    mat4.translate(this.frontFenderTranslate, this.frontFenderTranslate, vec3.fromValues(carLength/2 + .08, carWidth/2 - .03,0));
+    this.rearRightFender = new RearFender(gl);
+    this.rearRightFenderTranslate = mat4.create();
+    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(carLength/2 + .07, carWidth/2 - .03, .145));
+
+    this.rearLeftFender = new RearFender(gl);
+    this.rearLeftFenderTranslate = mat4.create(); 
+    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(carLength/2 + .07, -carWidth/2 + .03, .145));
 
     this.tmp = mat4.create();
   }
@@ -141,7 +145,10 @@ class Car {
     mat4.mul(this.tmp, coordFrame, this.rearBumperTranslate);
     this.rearBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
-    mat4.mul(this.tmp, coordFrame, this.frontFenderTranslate);
-    this.frontFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+    mat4.mul(this.tmp, coordFrame, this.rearRightFenderTranslate);
+    this.rearRightFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearLeftFenderTranslate);
+    this.rearLeftFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
   }
 }
