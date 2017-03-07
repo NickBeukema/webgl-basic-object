@@ -11,7 +11,7 @@
  - [ ] Doors
  - [ ] Side above front wheels - Kevin
  - [x] Side above back wheels
- - [ ] Glass
- - [ ] Front windshield - Kevin
- - [ ] Rear windshield - Kevin
+ - [x] Glass
+ - [x] Front windshield 
+ - [x] Rear windshield
  - [x] Axes and Perspective View

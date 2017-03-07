@@ -39,6 +39,8 @@ function main() {
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     gl.enable (gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
 
     posAttr = gl.getAttribLocation(prog, "vertexPos");

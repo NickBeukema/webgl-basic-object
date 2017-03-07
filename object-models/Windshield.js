@@ -1,16 +1,21 @@
-class Bumper {
+class Windshield {
   /**
-   * Create a Bumper
+   * Create a Hood
    * @param {Object} gl         the current WebGL context
    */
   constructor (gl) {
-    let white = vec3.fromValues(0.6,0.6,0.6);
+    let white = vec4.fromValues(0.7,0.7,0.7,.4);
 
-    let bumperScale = mat4.create();
-    mat4.scale(bumperScale, bumperScale, vec3.fromValues(0.1, 1, 0.45));
+    this.windshield = new Cube(gl, .4, 4, false, white, white);
 
-    this.bumper = new Cube(gl, .4, 4, false, white, white);
-    this.bumperTransform = bumperScale;
+    let windshieldScale = mat4.create();
+    mat4.scale(windshieldScale, windshieldScale, vec3.fromValues(0.85, 1, 0.02));
+
+    let windshieldRotate = mat4.create();
+    mat4.rotateY(windshieldRotate, windshieldRotate, Math.PI/3.75);
+
+    this.windshieldTransform = mat4.create();
+    mat4.mul(this.windshieldTransform, windshieldRotate, windshieldScale);
 
     this.tmp = mat4.create();
   }
@@ -27,7 +32,7 @@ class Bumper {
     gl.uniformMatrix4fv(modelUniform, false, coordFrame);
 
 
-    mat4.mul(this.tmp, coordFrame, this.bumperTransform);
-    this.bumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+    mat4.mul(this.tmp, coordFrame, this.windshieldTransform);
+    this.windshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
   }
 }

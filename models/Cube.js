@@ -6,14 +6,16 @@ class Cube {
    * @param {Object} gl     the current WebGL context
    * @param {Number} size   height/width/depth of the cube
    * @param {Number} subDiv number of subdivisions each face has
-   * @param {vec3}   col1   color #1 to use
-   * @param {vec3}   col2   color #2 to use
+   * @param {vec4}   col1   color #1 to use
+   * @param {vec4}   col2   color #2 to use
    */
   constructor (gl, size, subDiv, wireframe = false, col1, col2) {
 
     /* if colors are undefined, generate random colors */
-    if (typeof col1 === "undefined") col1 = vec3.fromValues(Math.random(), Math.random(), Math.random());
-    if (typeof col2 === "undefined") col2 = vec3.fromValues(Math.random(), Math.random(), Math.random());
+    if (typeof col1 === "undefined") col1 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
+    if (typeof col2 === "undefined") col2 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
+    let transparency = col1[3] || 1;
+    console.log(transparency);
 
     let primitive1 = gl.TRIANGLE_STRIP;
     if(wireframe) {
@@ -48,7 +50,7 @@ class Cube {
 
         faceVertices.push(point[0], point[1], point[2]);
         vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2]);
+        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
 
         firstFaceVertices.push(point);
       }
@@ -67,7 +69,7 @@ class Cube {
         faceVertices.push(p[0], p[1], p[2]);
 
         vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2]);
+        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
       });
     }
 
@@ -79,7 +81,7 @@ class Cube {
         faceVertices.push(p[0], p[1], p[2]);
 
         vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2]);
+        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
       });
     }
 
@@ -140,8 +142,8 @@ class Cube {
 
     /* with the "packed layout"  (x,y,z,r,g,b),
        the stride distance between one group to the next is 24 bytes */
-    gl.vertexAttribPointer(vertexAttr, 3, gl.FLOAT, false, 24, 0); /* (x,y,z) begins at offset 0 */
-    gl.vertexAttribPointer(colorAttr, 3, gl.FLOAT, false, 24, 12); /* (r,g,b) begins at offset 12 */
+    gl.vertexAttribPointer(vertexAttr, 3, gl.FLOAT, false, 28, 0); /* (x,y,z) begins at offset 0 */
+    gl.vertexAttribPointer(colorAttr, 4, gl.FLOAT, false, 28, 12); /* (r,g,b) begins at offset 12 */
 
     for (let k = 0; k < this.indices.length; k++) {
       let obj = this.indices[k];
