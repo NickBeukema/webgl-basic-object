@@ -12,6 +12,6 @@
  - [ ] Side above front wheels - Kevin
  - [x] Side above back wheels
  - [ ] Glass
- - [ ] Front windshield
- - [ ] Rear windshield
+ - [ ] Front windshield - Kevin
+ - [ ] Rear windshield - Kevin
  - [x] Axes and Perspective View
