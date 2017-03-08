@@ -131,8 +131,24 @@ class Car {
     mat4.rotateX(frontWindshieldRotate, frontWindshieldRotate, Math.PI);
     mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(-carLength/4, 0, .39));
     mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
-    
+
+
+    //
+    // Doors
+    //
+
+    this.frontLeftDoor = new FrontDoor(gl);
+    this.frontLeftDoorTransform = mat4.create();
+
+    let frontLeftDoorTranslate = mat4.create();
+    mat4.translate(frontLeftDoorTranslate, frontLeftDoorTranslate, vec3.fromValues(-0.2, +carWidth/2.0 - 0.07, 0.1));
+
+
+    mat4.mul(this.frontLeftDoorTransform, this.frontLeftDoorTransform, frontLeftDoorTranslate);
+
+
     this.tmp = mat4.create();
+
 
   }
 
@@ -180,12 +196,16 @@ class Car {
 
     mat4.mul(this.tmp, coordFrame, this.rearLeftFenderTranslate);
     this.rearLeftFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-    
+
     mat4.mul(this.tmp, coordFrame, this.frontWindshieldTransform);
     this.frontWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     mat4.mul(this.tmp, coordFrame, this.rearWindshieldTranslate);
     this.rearWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    // Doors
+    mat4.mul(this.tmp, coordFrame, this.frontLeftDoorTransform);
+    this.frontLeftDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
   }
 }
