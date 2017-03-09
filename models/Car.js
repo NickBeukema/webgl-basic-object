@@ -137,14 +137,47 @@ class Car {
     // Doors
     //
 
+    this.frontRightDoor = new FrontDoor(gl);
+    this.frontRightDoorTransform = mat4.create();
+
+    let frontRightDoorTranslate = mat4.create();
+    mat4.translate(frontRightDoorTranslate, frontRightDoorTranslate, vec3.fromValues(-0.2, +carWidth/2.0 - 0.07, 0.1));
+
+    mat4.mul(this.frontRightDoorTransform, this.frontRightDoorTransform, frontRightDoorTranslate);
+
+
     this.frontLeftDoor = new FrontDoor(gl);
     this.frontLeftDoorTransform = mat4.create();
 
     let frontLeftDoorTranslate = mat4.create();
-    mat4.translate(frontLeftDoorTranslate, frontLeftDoorTranslate, vec3.fromValues(-0.2, +carWidth/2.0 - 0.07, 0.1));
-
+    mat4.translate(frontLeftDoorTranslate, frontLeftDoorTranslate, vec3.fromValues(-0.2, -carWidth/2.0 + 0.07, 0.1));
 
     mat4.mul(this.frontLeftDoorTransform, this.frontLeftDoorTransform, frontLeftDoorTranslate);
+
+
+
+    this.rearLeftDoor = new FrontDoor(gl);
+    this.rearLeftDoorTransform = mat4.create();
+
+
+    let rearLeftDoorRotate = mat4.create();
+    mat4.rotateZ(rearLeftDoorRotate, rearLeftDoorRotate, Math.PI);
+
+    let rearLeftDoorTranslate = mat4.create();
+    mat4.translate(rearLeftDoorTranslate, rearLeftDoorTranslate, vec3.fromValues(0.2, -carWidth/2.0 + 0.07, 0.1));
+
+    mat4.mul(this.rearLeftDoorTransform, rearLeftDoorTranslate, rearLeftDoorRotate);
+
+    this.rearRightDoor = new FrontDoor(gl);
+    this.rearRightDoorTransform = mat4.create();
+
+    let rearRightDoorRotate = mat4.create();
+    mat4.rotateZ(rearRightDoorRotate, rearRightDoorRotate, Math.PI);
+
+    let rearRightDoorTranslate = mat4.create();
+    mat4.translate(rearRightDoorTranslate, rearRightDoorTranslate, vec3.fromValues(0.2, carWidth/2.0 - 0.07, 0.1));
+
+    mat4.mul(this.rearRightDoorTransform, rearRightDoorTranslate, rearRightDoorRotate);
 
 
     this.tmp = mat4.create();
@@ -204,8 +237,17 @@ class Car {
     this.rearWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     // Doors
+    mat4.mul(this.tmp, coordFrame, this.frontRightDoorTransform);
+    this.frontRightDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
     mat4.mul(this.tmp, coordFrame, this.frontLeftDoorTransform);
     this.frontLeftDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearLeftDoorTransform);
+    this.rearLeftDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearRightDoorTransform);
+    this.rearRightDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
   }
 }
