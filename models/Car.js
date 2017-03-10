@@ -1,18 +1,20 @@
-class Car {
+class Car extends BasicShape {
   /**
    * Create a 3D Car
    * @param {Object} gl         the current WebGL context
    */
   constructor (gl) {
-    let carWidth = 0.5;
-    let carLength = 1.5;
+    super(gl);
+
+    this.carWidth = 0.5;
+    this.carLength = 1.5;
 
     //
     // Tires
     //
 
-    let tirePosX = (carLength/2.0) * .8;
-    let tirePosY = (carWidth/2.0);
+    let tirePosX = (this.carLength/2.0) * .8;
+    let tirePosY = (this.carWidth/2.0);
 
 
     this.frontRightTire = new Tire(gl);
@@ -32,6 +34,12 @@ class Car {
     mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(tirePosX,-tirePosY, 0));
 
 
+    this.addPartToList(this.parts, this.frontRightTire, this.frontRightTireTranslate);
+    this.addPartToList(this.parts, this.frontLeftTire, this.frontLeftTireTranslate);
+    this.addPartToList(this.parts, this.rearRightTire, this.rearRightTireTranslate);
+    this.addPartToList(this.parts, this.rearLeftTire, this.rearLeftTireTranslate);
+
+
     //
     // Front hood
     //
@@ -45,6 +53,8 @@ class Car {
 
     this.hoodTransform = hoodTranslate;
 
+    this.addPartToList(this.parts, this.hood, this.hoodTransform);
+
 
     //
     // Front bumper
@@ -53,8 +63,9 @@ class Car {
     this.frontBumper = new Bumper(gl);
     this.frontBumperTransform = mat4.create();
     this.frontBumperTranslate = mat4.create();
-    mat4.translate(this.frontBumperTransform, this.frontBumperTranslate, vec3.fromValues(-carLength/2 - 0.183, 0, 0.13));
+    mat4.translate(this.frontBumperTransform, this.frontBumperTranslate, vec3.fromValues(-this.carLength/2 - 0.183, 0, 0.13));
 
+    this.addPartToList(this.parts, this.frontBumper, this.frontBumperTransform);
 
     //
     // Roof
@@ -65,6 +76,7 @@ class Car {
     let roofTranslateVec = vec3.fromValues(0,0,0.5);
     mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
 
+    this.addPartToList(this.parts, this.roof, this.roofTransform);
 
     //
     // Trunk
@@ -75,6 +87,8 @@ class Car {
     let trunkTransformVec = vec3.fromValues(0.64,0,0.24);
     mat4.translate(this.trunkTransform, this.trunkTransform, trunkTransformVec);
 
+    this.addPartToList(this.parts, this.trunk, this.trunkTransform);
+
     //
     // Rear bumper
     //
@@ -82,7 +96,9 @@ class Car {
     this.rearBumper = new Bumper(gl);
     this.rearBumperTransform = mat4.create();
     this.rearBumperTranslate = mat4.create();
-    mat4.translate(this.rearBumperTransform, this.rearBumperTranslate, vec3.fromValues(carLength/2 + 0.11, 0, 0.13));
+    mat4.translate(this.rearBumperTransform, this.rearBumperTranslate, vec3.fromValues(this.carLength/2 + 0.11, 0, 0.13));
+
+    this.addPartToList(this.parts, this.rearBumper, this.rearBumperTransform);
 
     //
     // Rear Fenders
@@ -90,17 +106,30 @@ class Car {
 
     this.rearRightFender = new RearFender(gl);
     this.rearRightFenderTranslate = mat4.create();
-    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(carLength/2 + .07, carWidth/2 - .05, .145));
+    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(this.carLength/2 + .07, this.carWidth/2 - .05, .145));
 
     this.rearLeftFender = new RearFender(gl);
     this.rearLeftFenderTranslate = mat4.create(); 
-    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(carLength/2 + .07, -carWidth/2 + .05, .145));
+    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(this.carLength/2 + .07, -this.carWidth/2 + .05, .145));
+
+    this.addPartToList(this.parts, this.rearRightFender, this.rearRightFenderTranslate);
+    this.addPartToList(this.parts, this.rearLeftFender, this.rearLeftFenderTranslate);
 
 
     //
     // Front Fenders
     //
 
+    this.frontRightFender = new FrontFender(gl);
+    this.frontRightFenderTranslate = mat4.create();
+    mat4.translate(this.frontRightFenderTranslate, this.frontRightFenderTranslate, vec3.fromValues(-this.carLength/2 + .07, this.carWidth/2 - .05, .145));
+
+    this.frontLeftFender = new FrontFender(gl);
+    this.frontLeftFenderTranslate = mat4.create();
+    mat4.translate(this.frontLeftFenderTranslate, this.frontLeftFenderTranslate, vec3.fromValues(-this.carLength/2 + .07, -this.carWidth/2 + .05, .145));
+
+    this.addPartToList(this.parts, this.frontRightFender, this.frontRightFenderTranslate);
+    this.addPartToList(this.parts, this.frontLeftFender, this.frontLeftFenderTranslate);
 
     //
     // Doors
@@ -110,16 +139,17 @@ class Car {
     this.frontRightDoorTransform = mat4.create();
 
     let frontRightDoorTranslate = mat4.create();
-    mat4.translate(frontRightDoorTranslate, frontRightDoorTranslate, vec3.fromValues(-0.2, +carWidth/2.0 - 0.07, 0.1));
+    mat4.translate(frontRightDoorTranslate, frontRightDoorTranslate, vec3.fromValues(-0.2, +this.carWidth/2.0 - 0.07, 0.1));
 
     mat4.mul(this.frontRightDoorTransform, this.frontRightDoorTransform, frontRightDoorTranslate);
+
 
 
     this.frontLeftDoor = new FrontDoor(gl);
     this.frontLeftDoorTransform = mat4.create();
 
     let frontLeftDoorTranslate = mat4.create();
-    mat4.translate(frontLeftDoorTranslate, frontLeftDoorTranslate, vec3.fromValues(-0.2, -carWidth/2.0 + 0.07, 0.1));
+    mat4.translate(frontLeftDoorTranslate, frontLeftDoorTranslate, vec3.fromValues(-0.2, -this.carWidth/2.0 + 0.07, 0.1));
 
     mat4.mul(this.frontLeftDoorTransform, this.frontLeftDoorTransform, frontLeftDoorTranslate);
 
@@ -133,9 +163,11 @@ class Car {
     mat4.rotateZ(rearLeftDoorRotate, rearLeftDoorRotate, Math.PI);
 
     let rearLeftDoorTranslate = mat4.create();
-    mat4.translate(rearLeftDoorTranslate, rearLeftDoorTranslate, vec3.fromValues(0.2, -carWidth/2.0 + 0.07, 0.1));
+    mat4.translate(rearLeftDoorTranslate, rearLeftDoorTranslate, vec3.fromValues(0.2, -this.carWidth/2.0 + 0.07, 0.1));
 
     mat4.mul(this.rearLeftDoorTransform, rearLeftDoorTranslate, rearLeftDoorRotate);
+
+
 
     this.rearRightDoor = new FrontDoor(gl);
     this.rearRightDoorTransform = mat4.create();
@@ -144,73 +176,29 @@ class Car {
     mat4.rotateZ(rearRightDoorRotate, rearRightDoorRotate, Math.PI);
 
     let rearRightDoorTranslate = mat4.create();
-    mat4.translate(rearRightDoorTranslate, rearRightDoorTranslate, vec3.fromValues(0.2, carWidth/2.0 - 0.07, 0.1));
+    mat4.translate(rearRightDoorTranslate, rearRightDoorTranslate, vec3.fromValues(0.2, this.carWidth/2.0 - 0.07, 0.1));
 
     mat4.mul(this.rearRightDoorTransform, rearRightDoorTranslate, rearRightDoorRotate);
 
 
+    this.addPartToList(this.parts, this.frontRightDoor, this.frontRightDoorTransform);
+    this.addPartToList(this.parts, this.frontLeftDoor, this.frontLeftDoorTransform);
+    this.addPartToList(this.parts, this.rearRightDoor, this.rearRightDoorTransform);
+    this.addPartToList(this.parts, this.rearLeftDoor, this.rearLeftDoorTransform);
+
+
+    // Car Floor
+
+    this.floor = new Floor(gl);
+    this.floorTranslate = mat4.create();
+
+    mat4.translate(this.floorTranslate, this.floorTranslate, vec3.fromValues(0,0,0.05));
+
+
+    this.addPartToList(this.parts, this.floor, this.floorTranslate);
+
     this.tmp = mat4.create();
 
-
-  }
-
-  /**
-   * Draw the object
-   * @param {Number} vertexAttr a handle to a vec3 attribute in the vertex shader for vertex xyz-position
-   * @param {Number} colorAttr  a handle to a vec3 attribute in the vertex shader for vertex rgb-color
-   * @param {Number} modelUniform a handle to a mat4 uniform in the shader for the coordinate frame of the model
-   * @param {mat4} coordFrame a JS mat4 variable that holds the actual coordinate frame of the object
-   */
-  draw(vertexAttr, colorAttr, modelUniform, coordFrame) {
-    /* copy the coordinate frame matrix to the uniform memory in shader */
-    gl.uniformMatrix4fv(modelUniform, false, coordFrame);
-
-
-    mat4.mul(this.tmp, coordFrame, this.frontRightTireTranslate);
-    this.frontRightTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.frontLeftTireTranslate);
-    this.frontLeftTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearRightTireTranslate);
-    this.rearRightTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearLeftTireTranslate);
-    this.rearLeftTire.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.hoodTransform);
-    this.hood.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.frontBumperTransform);
-    this.frontBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.roofTransform);
-    this.roof.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.trunkTransform);
-    this.trunk.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearBumperTransform);
-    this.rearBumper.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearRightFenderTranslate);
-    this.rearRightFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearLeftFenderTranslate);
-    this.rearLeftFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    // Doors
-    mat4.mul(this.tmp, coordFrame, this.frontRightDoorTransform);
-    this.frontRightDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.frontLeftDoorTransform);
-    this.frontLeftDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearLeftDoorTransform);
-    this.rearLeftDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearRightDoorTransform);
-    this.rearRightDoor.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
   }
 }

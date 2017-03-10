@@ -8,10 +8,12 @@
  - [x] Back bumper
  - [x] Roof
  - [x] Trunk
- - [ ] Doors
- - [ ] Side above front wheels - Kevin
+ - [x] Doors
+ - [x] Side above front wheels
  - [x] Side above back wheels
  - [x] Glass
- - [x] Front windshield 
+ - [x] Front windshield
  - [x] Rear windshield
  - [x] Axes and Perspective View
+ - [ ] Wheel Wells
+ - [ ] Door Glass
