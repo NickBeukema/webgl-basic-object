@@ -7,7 +7,7 @@ class Hood {
     let white = vec3.fromValues(0.6,0.6,0.6);
 
     let hoodScale = mat4.create();
-    mat4.scale(hoodScale, hoodScale, vec3.fromValues(1, 1, 0.1));
+    mat4.scale(hoodScale, hoodScale, vec3.fromValues(1.39, 1, 0.1));
 
     this.hood = new Cube(gl, .4, 4, false, white, white);
     this.hoodTransform = hoodScale;

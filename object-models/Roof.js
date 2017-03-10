@@ -41,6 +41,15 @@ class Roof {
     mat4.mul(this.leftFrontPostTransform, leftFrontPostTranslate, leftFrontPostRotate);
 
 
+    this.frontWindshield = new Windshield(gl);
+    this.frontWindshieldTransform = mat4.create();
+    let frontWindshieldTranslate = mat4.create();
+    let frontWindshieldRotate = mat4.create();
+    mat4.rotateX(frontWindshieldRotate, frontWindshieldRotate, Math.PI);
+    mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(frontPostTranslateX + 0.11, 0, frontPostTranslateZ/2));
+    mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
+
+
 
     // Rear windshield
     this.rightRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, white, white);
@@ -56,6 +65,14 @@ class Roof {
     mat4.mul(this.rightRearPostTransform, rightRearPostTranslate, rightRearPostRotate);
 
 
+
+    this.rearWindshield = new Windshield(gl);
+    this.rearWindshieldTransform = mat4.create();
+    mat4.translate(this.rearWindshieldTransform, this.rearWindshieldTransform, vec3.fromValues(-frontPostTranslateX - 0.11, 0, frontPostTranslateZ/2));
+
+
+
+
     this.leftRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, white, white);
     this.leftRearPostTransform = mat4.create();
 
@@ -67,6 +84,9 @@ class Roof {
     mat4.translate(leftRearPostTranslate, leftRearPostTranslate, leftRearPostTranslateVec);
 
     mat4.mul(this.leftRearPostTransform, leftRearPostTranslate, leftRearPostRotate);
+
+
+
 
 
     this.tmp = mat4.create();
@@ -84,19 +104,31 @@ class Roof {
     gl.uniformMatrix4fv(modelUniform, false, coordFrame);
 
 
+    // Top
     mat4.mul(this.tmp, coordFrame, this.roofTopTransform);
     this.roofTop.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
+
+    // Front
     mat4.mul(this.tmp, coordFrame, this.rightFrontPostTransform);
     this.rightFrontPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     mat4.mul(this.tmp, coordFrame, this.leftFrontPostTransform);
     this.leftFrontPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
+    mat4.mul(this.tmp, coordFrame, this.frontWindshieldTransform);
+    this.frontWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+
+    // Rear
     mat4.mul(this.tmp, coordFrame, this.rightRearPostTransform);
     this.rightRearPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     mat4.mul(this.tmp, coordFrame, this.leftRearPostTransform);
     this.leftRearPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
+    mat4.mul(this.tmp, coordFrame, this.rearWindshieldTransform);
+    this.rearWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
+
   }
 }

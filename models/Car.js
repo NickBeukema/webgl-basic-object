@@ -5,13 +5,13 @@ class Car {
    */
   constructor (gl) {
     let carWidth = 0.5;
-    let carLength = 1.2;
+    let carLength = 1.5;
 
     //
     // Tires
     //
 
-    let tirePosX = (carLength/2.0) * .80;
+    let tirePosX = (carLength/2.0) * .8;
     let tirePosY = (carWidth/2.0);
 
 
@@ -39,19 +39,11 @@ class Car {
     this.hood = new Hood(gl);
 
     let hoodTranslate = mat4.create();
-    let hoodTranslateVec = vec3.fromValues(-carLength/2, 0, 0.2);
+    let hoodTranslateVec = vec3.fromValues(-0.675, 0, 0.24);
 
     mat4.translate(hoodTranslate, hoodTranslate, hoodTranslateVec);
 
-    // TODO: refactor the rotate into the shape
-    let hoodRotate = mat4.create();
-    let hoodRotateRad = -Math.PI/10;
-
-    mat4.rotateY(hoodRotate, hoodRotate, hoodRotateRad);
-
-
-    this.hoodTransform = mat4.create();
-    mat4.mul(this.hoodTransform, hoodTranslate, hoodRotate);
+    this.hoodTransform = hoodTranslate;
 
 
     //
@@ -61,7 +53,7 @@ class Car {
     this.frontBumper = new Bumper(gl);
     this.frontBumperTransform = mat4.create();
     this.frontBumperTranslate = mat4.create();
-    mat4.translate(this.frontBumperTransform, this.frontBumperTranslate, vec3.fromValues(-carLength/2 - 0.2 + 0.02, 0, 0.05));
+    mat4.translate(this.frontBumperTransform, this.frontBumperTranslate, vec3.fromValues(-carLength/2 - 0.183, 0, 0.13));
 
 
     //
@@ -80,7 +72,7 @@ class Car {
 
     this.trunk = new Trunk(gl);
     this.trunkTransform = mat4.create();
-    let trunkTransformVec = vec3.fromValues(0.57,0,0.24);
+    let trunkTransformVec = vec3.fromValues(0.64,0,0.24);
     mat4.translate(this.trunkTransform, this.trunkTransform, trunkTransformVec);
 
     //
@@ -94,8 +86,7 @@ class Car {
 
     //
     // Rear Fenders
-    // 
-    
+    //
 
     this.rearRightFender = new RearFender(gl);
     this.rearRightFenderTranslate = mat4.create();
@@ -105,32 +96,10 @@ class Car {
     this.rearLeftFenderTranslate = mat4.create(); 
     mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(carLength/2 + .07, -carWidth/2 + .05, .145));
 
-    
 
     //
     // Front Fenders
     //
-    
-
-    //
-    // Rear Windshield
-    //
-  
-    this.rearWindshield = new Windshield(gl);
-    this.rearWindshieldTranslate = mat4.create(); 
-    mat4.translate(this.rearWindshieldTranslate, this.rearWindshieldTranslate, vec3.fromValues(carLength/4, 0, .39));
-
-    //
-    // Front Windshield
-    //
-  
-    this.frontWindshield = new Windshield(gl);
-    this.frontWindshieldTransform = mat4.create();
-    let frontWindshieldTranslate = mat4.create();
-    let frontWindshieldRotate = mat4.create();
-    mat4.rotateX(frontWindshieldRotate, frontWindshieldRotate, Math.PI);
-    mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(-carLength/4, 0, .39));
-    mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
 
 
     //
@@ -229,12 +198,6 @@ class Car {
 
     mat4.mul(this.tmp, coordFrame, this.rearLeftFenderTranslate);
     this.rearLeftFender.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.frontWindshieldTransform);
-    this.frontWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearWindshieldTranslate);
-    this.rearWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
 
     // Doors
     mat4.mul(this.tmp, coordFrame, this.frontRightDoorTransform);
