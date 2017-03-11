@@ -14,7 +14,7 @@ class Car extends BasicShape {
     //
 
     let tirePosX = (this.carLength/2.0) * .8;
-    let tirePosY = (this.carWidth/2.0);
+    let tirePosY = (this.carWidth/2.0) - 0.05;
 
 
     this.frontRightTire = new Tire(gl);
@@ -117,19 +117,43 @@ class Car extends BasicShape {
 
 
     //
-    // Front Fenders
+    // Front Fenders and Wheel Wells
     //
 
     this.frontRightFender = new FrontFender(gl);
     this.frontRightFenderTranslate = mat4.create();
-    mat4.translate(this.frontRightFenderTranslate, this.frontRightFenderTranslate, vec3.fromValues(-this.carLength/2 + .07, this.carWidth/2 - .05, .145));
+    let frontRightTranslateVector = vec3.fromValues(-this.carLength/2 + .07, this.carWidth/2 - .05, .145);
+    mat4.translate(this.frontRightFenderTranslate, this.frontRightFenderTranslate, frontRightTranslateVector);
+
+    this.frontRightWheelWell = new FrontWheelWell(gl);
+    this.frontRightWheelWellTransform = mat4.create();
+    mat4.translate(this.frontRightWheelWellTransform, this.frontRightWheelWellTransform, frontRightTranslateVector);
+
+    this.addPartToList(this.frontRightFender, this.frontRightFenderTranslate);
+    this.addPartToList(this.frontRightWheelWell, this.frontRightWheelWellTransform);
+
+
+
 
     this.frontLeftFender = new FrontFender(gl);
     this.frontLeftFenderTranslate = mat4.create();
-    mat4.translate(this.frontLeftFenderTranslate, this.frontLeftFenderTranslate, vec3.fromValues(-this.carLength/2 + .07, -this.carWidth/2 + .05, .145));
+    let frontLeftTranslateVector = vec3.fromValues(-this.carLength/2 + .07, -this.carWidth/2 + .05, .145);
+    mat4.translate(this.frontLeftFenderTranslate, this.frontLeftFenderTranslate, frontLeftTranslateVector);
 
-    this.addPartToList(this.frontRightFender, this.frontRightFenderTranslate);
+    this.frontLeftWheelWell = new FrontWheelWell(gl);
+    this.frontLeftWheelWellTransform = mat4.create();
+
+    let frontLeftWheelWellRotate = mat4.create();
+    let frontLeftWheelWellTranslate = mat4.create();
+
+    mat4.rotateZ(frontLeftWheelWellRotate, frontLeftWheelWellRotate, Math.PI);
+    mat4.translate(frontLeftWheelWellTranslate, frontLeftWheelWellTranslate, vec3.fromValues(-this.carLength/2 + 0.22, -this.carWidth/2 + 0.05, 0.145));
+
+    mat4.mul(this.frontLeftWheelWellTransform, frontLeftWheelWellTranslate, frontLeftWheelWellRotate);
+
     this.addPartToList(this.frontLeftFender, this.frontLeftFenderTranslate);
+    this.addPartToList(this.frontLeftWheelWell, this.frontLeftWheelWellTransform);
+
 
     //
     // Doors
@@ -187,7 +211,9 @@ class Car extends BasicShape {
     this.addPartToList(this.rearLeftDoor, this.rearLeftDoorTransform);
 
 
+    //
     // Car Floor
+    //
 
     this.floor = new Floor(gl);
     this.floorTranslate = mat4.create();
@@ -198,7 +224,6 @@ class Car extends BasicShape {
     this.addPartToList(this.floor, this.floorTranslate);
 
     this.tmp = mat4.create();
-
 
   }
 }

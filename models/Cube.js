@@ -15,7 +15,6 @@ class Cube {
     if (typeof col1 === "undefined") col1 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
     if (typeof col2 === "undefined") col2 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
     let transparency = col1[3] || 1;
-    console.log(transparency);
 
     let primitive1 = gl.TRIANGLE_STRIP;
     if(wireframe) {
