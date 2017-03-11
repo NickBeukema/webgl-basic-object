@@ -3,8 +3,8 @@ class BasicShape {
     this.parts = [];
   }
 
-  addPartToList(list, object, transform) {
-    list.push({
+  addPartToList(object, transform) {
+    this.parts.push({
       object: object,
       transform: transform
     });
