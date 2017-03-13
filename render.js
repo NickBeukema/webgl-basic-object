@@ -33,6 +33,8 @@ function main() {
   
   gl = WebGLUtils.create3DContext(canvas, null);
 
+  document.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('mousewheel', handleScroll);
 
 
   axisBuff = gl.createBuffer()
@@ -105,6 +107,48 @@ function main() {
     /* initiate the render loop */
     render();
   });
+}
+
+let viewRadius = 2;
+let currentViewPosX = 0;
+let currentViewPosY = 0;
+let viewRangeMultiplier = 20;
+
+function handleScroll(evt) {
+  let direction = evt.wheelDelta < 0 ? -1 : 1;
+
+  viewRadius += direction/10;
+  if(viewRadius < 2) {
+    viewRadius = 2;
+  } else {
+    viewRangeMultiplier += direction;
+  }
+
+
+  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+}
+
+function handleMouseMove(evt) {
+
+  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+
+}
+
+function renderViewCoords(pageX, pageY, radius) {
+  x = -(pageX / document.body.getBoundingClientRect().width - 0.5) * viewRangeMultiplier;
+  y = (pageY / document.body.getBoundingClientRect().height - 0.5) * viewRangeMultiplier;
+  let longitude = x/radius;
+  let latitude = 2 * Math.atan(Math.exp(y/radius)) - Math.PI/2;
+
+  let pX = radius * Math.cos(latitude) * Math.cos(longitude);
+  let pY = radius * Math.cos(latitude) * Math.sin(longitude);
+  let pZ = radius * Math.sin(latitude);
+
+
+  mat4.lookAt(viewMat,
+      vec3.fromValues(pX, pY, pZ), /* eye */
+      vec3.fromValues(0, 0, 0), /* focal point */
+      vec3.fromValues(0, 0, 1)); /* up */
 }
 
 function drawScene() {
