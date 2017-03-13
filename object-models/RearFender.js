@@ -13,7 +13,7 @@ class RearFender {
     this.fender1Transform = fender1Scale;
 
     let fender2Scale = mat4.create();
-    mat4.scale(fender2Scale, fender2Scale, vec3.fromValues(0.92, .01, 0.3));
+    mat4.scale(fender2Scale, fender2Scale, vec3.fromValues(0.78, .01, 0.3));
     let fender2Translate = mat4.create();
     mat4.translate(fender2Translate, fender2Translate, vec3.fromValues(-0.26, 0, .19));
 

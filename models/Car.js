@@ -14,6 +14,7 @@ class Car extends BasicShape {
     //
 
     let tirePosX = (this.carLength/2.0) * .8;
+    let tirePosXRear = tirePosX - 0.05;
     let tirePosY = (this.carWidth/2.0) - 0.05;
 
 
@@ -27,11 +28,11 @@ class Car extends BasicShape {
 
     this.rearRightTire = new Tire(gl);
     this.rearRightTireTranslate = mat4.create();
-    mat4.translate(this.rearRightTireTranslate, this.rearRightTireTranslate, vec3.fromValues(tirePosX,tirePosY, 0));
+    mat4.translate(this.rearRightTireTranslate, this.rearRightTireTranslate, vec3.fromValues(tirePosXRear,tirePosY, 0));
 
     this.rearLeftTire = new Tire(gl);
     this.rearLeftTireTranslate = mat4.create();
-    mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(tirePosX,-tirePosY, 0));
+    mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(tirePosXRear,-tirePosY, 0));
 
 
     this.addPartToList(this.frontRightTire, this.frontRightTireTranslate);
@@ -84,7 +85,7 @@ class Car extends BasicShape {
 
     this.trunk = new Trunk(gl);
     this.trunkTransform = mat4.create();
-    let trunkTransformVec = vec3.fromValues(0.64,0,0.24);
+    let trunkTransformVec = vec3.fromValues(0.615,0,0.24);
     mat4.translate(this.trunkTransform, this.trunkTransform, trunkTransformVec);
 
     this.addPartToList(this.trunk, this.trunkTransform);
@@ -96,7 +97,7 @@ class Car extends BasicShape {
     this.rearBumper = new Bumper(gl);
     this.rearBumperTransform = mat4.create();
     this.rearBumperTranslate = mat4.create();
-    mat4.translate(this.rearBumperTransform, this.rearBumperTranslate, vec3.fromValues(this.carLength/2 + 0.11, 0, 0.13));
+    mat4.translate(this.rearBumperTransform, this.rearBumperTranslate, vec3.fromValues(this.carLength/2 + 0.04, 0, 0.13));
 
     this.addPartToList(this.rearBumper, this.rearBumperTransform);
 
@@ -104,13 +105,17 @@ class Car extends BasicShape {
     // Rear Fenders
     //
 
+    let rearFenderX = this.carLength/2;
+    let rearFenderY = this.carWidth/2 - 0.05;
+    let rearFenderZ = 0.145;
+
     this.rearRightFender = new RearFender(gl);
     this.rearRightFenderTranslate = mat4.create();
-    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(this.carLength/2 + .07, this.carWidth/2 - .05, .145));
+    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(rearFenderX, rearFenderY, rearFenderZ));
 
     this.rearLeftFender = new RearFender(gl);
     this.rearLeftFenderTranslate = mat4.create(); 
-    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(this.carLength/2 + .07, -this.carWidth/2 + .05, .145));
+    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(rearFenderX, -rearFenderY, rearFenderZ));
 
     this.addPartToList(this.rearRightFender, this.rearRightFenderTranslate);
     this.addPartToList(this.rearLeftFender, this.rearLeftFenderTranslate);
@@ -218,7 +223,7 @@ class Car extends BasicShape {
     this.floor = new Floor(gl);
     this.floorTranslate = mat4.create();
 
-    mat4.translate(this.floorTranslate, this.floorTranslate, vec3.fromValues(0,0,0.05));
+    mat4.translate(this.floorTranslate, this.floorTranslate, vec3.fromValues(-0.072,0,0.05));
 
 
     this.addPartToList(this.floor, this.floorTranslate);

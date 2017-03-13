@@ -9,7 +9,7 @@ class Trunk {
     this.trunk = new Cube(gl, .4, 4, false, white, white);
 
     let trunkScale = mat4.create();
-    mat4.scale(trunkScale, trunkScale, vec3.fromValues(1.2, 1, 0.1));
+    mat4.scale(trunkScale, trunkScale, vec3.fromValues(0.97, 1, 0.1));
 
     this.trunkTransform = trunkScale;
 
