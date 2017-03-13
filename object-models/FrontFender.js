@@ -6,11 +6,9 @@ class FrontFender extends BasicShape {
   constructor (gl) {
     super(gl);
 
-    let white = vec3.fromValues(0.6,0.6,0.6);
-
     // Top portion of fender
 
-    let topFender = new Cube(gl, 0.4, 4, false, white, white);
+    let topFender = new Cube(gl, 0.4, 4, false, this.white, this.white);
     let topFenderTransform = mat4.create();
 
     let topFenderScale = mat4.create();
@@ -26,7 +24,7 @@ class FrontFender extends BasicShape {
 
     // Side portion of fender
 
-    let sideFender = new Cube(gl, 0.4, 4, false, white, white);
+    let sideFender = new Cube(gl, 0.4, 4, false, this.white, this.white);
     let sideFenderTransform = mat4.create();
 
     let sideFenderScale = mat4.create();
@@ -38,8 +36,5 @@ class FrontFender extends BasicShape {
     mat4.mul(sideFenderTransform, sideFenderTranslate, sideFenderScale);
 
     this.addPartToList(sideFender, sideFenderTransform);
-
-
-    this.tmp = mat4.create();
   }
 }

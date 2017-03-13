@@ -109,7 +109,7 @@ function main() {
   });
 }
 
-let viewRadius = 2;
+let viewRadius = 3;
 let currentViewPosX = 0;
 let currentViewPosY = 0;
 let viewRangeMultiplier = 20;

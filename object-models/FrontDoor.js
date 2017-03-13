@@ -1,14 +1,12 @@
 class FrontDoor extends BasicShape {
   /**
-   * Create a Roof
+   * Create a Door
    * @param {Object} gl         the current WebGL context
    */
   constructor (gl) {
     super(gl);
 
-    let white = vec3.fromValues(0.6,0.6,0.6);
-
-    this.bottomDoorPanel = new Cube(gl, 0.40, 4, false, white, white);
+    this.bottomDoorPanel = new Cube(gl, 0.40, 4, false, this.white, this.white);
 
     let bottomDoorPanelScale = mat4.create();
     mat4.scale(bottomDoorPanelScale, bottomDoorPanelScale, vec3.fromValues(1, 0.7, 0.1));
@@ -23,7 +21,7 @@ class FrontDoor extends BasicShape {
 
 
 
-    this.rearDoorFrame = new Cube(gl, 0.28, 4, false, white, white);
+    this.rearDoorFrame = new Cube(gl, 0.28, 4, false, this.white, this.white);
     let rearDoorFrameScale = mat4.create();
     mat4.scale(rearDoorFrameScale, rearDoorFrameScale, vec3.fromValues(0.1, 0.1, 1));
 
@@ -37,7 +35,7 @@ class FrontDoor extends BasicShape {
     this.addPartToList(this.rearDoorFrame, this.rearDoorFrameTransform);
 
 
-    this.topDoorFrame = new Cube(gl, 0.28, 4, false, white, white);
+    this.topDoorFrame = new Cube(gl, 0.28, 4, false, this.white, this.white);
     let topDoorFrameScale = mat4.create();
     mat4.scale(topDoorFrameScale, topDoorFrameScale, vec3.fromValues(0.69, 0.1, 0.1));
 
@@ -50,7 +48,7 @@ class FrontDoor extends BasicShape {
     this.addPartToList(this.topDoorFrame, this.topDoorFrameTransform);
 
 
-    this.frontDoorFrame = new Cube(gl, 0.3, 4, false, white, white);
+    this.frontDoorFrame = new Cube(gl, 0.3, 4, false, this.white, this.white);
 
     let frontDoorFrameScale = mat4.create();
     mat4.scale(frontDoorFrameScale, frontDoorFrameScale, vec3.fromValues(0.1, 0.1, 1));
@@ -68,7 +66,7 @@ class FrontDoor extends BasicShape {
     this.addPartToList(this.frontDoorFrame, this.frontDoorFrameTransform);
 
 
-    this.frontDoorFrameFill = new Cube(gl, 0.3, 4, false, white, white);
+    this.frontDoorFrameFill = new Cube(gl, 0.3, 4, false, this.white, this.white);
     this.frontDoorFrameFillTransform = mat4.create();
 
     let frontDoorFrameFillScale = mat4.create();
@@ -79,9 +77,5 @@ class FrontDoor extends BasicShape {
 
     mat4.mul(this.frontDoorFrameFillTransform, frontDoorFrameFillTranslate, frontDoorFrameFillScale);
     this.addPartToList(this.frontDoorFrameFill, this.frontDoorFrameFillTransform);
-
-
-
-    this.tmp = mat4.create();
   }
 }

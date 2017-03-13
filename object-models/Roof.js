@@ -1,14 +1,17 @@
-class Roof {
+class Roof extends BasicShape {
   /**
    * Create a Roof
    * @param {Object} gl         the current WebGL context
    */
   constructor (gl) {
-    let white = vec3.fromValues(0.6,0.6,0.6);
+    super(gl);
 
-    this.roofTop = new Cube(gl, .4, 4, false, white, white);
+
+    this.roofTop = new Cube(gl, .4, 4, false, this.white, this.white);
     this.roofTopTransform = mat4.create();
     mat4.scale(this.roofTopTransform, this.roofTopTransform, vec3.fromValues(1, 1, 0.1));
+    this.addPartToList(this.roofTop, this.roofTopTransform);
+
 
     let frontPostRotateRad = Math.PI/4.3;
     let frontPostTranslateX = -0.42;
@@ -16,7 +19,7 @@ class Roof {
     let frontPostTranslateZ = -0.25;
 
     // Windshield and posts -- could be refactored out into another shape
-    this.rightFrontPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, white, white);
+    this.rightFrontPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
     this.rightFrontPostTransform = mat4.create();
 
     let rightFrontPostRotate = mat4.create();
@@ -28,7 +31,7 @@ class Roof {
 
     mat4.mul(this.rightFrontPostTransform, rightFrontPostTranslate, rightFrontPostRotate);
 
-    this.leftFrontPost = new TruncCone(gl, 0.01, 0.01, 0.33, 10, 1, white, white);
+    this.leftFrontPost = new TruncCone(gl, 0.01, 0.01, 0.33, 10, 1, this.white, this.white);
     this.leftFrontPostTransform = mat4.create();
 
     let leftFrontPostRotate = mat4.create();
@@ -41,18 +44,7 @@ class Roof {
     mat4.mul(this.leftFrontPostTransform, leftFrontPostTranslate, leftFrontPostRotate);
 
 
-    this.frontWindshield = new Windshield(gl);
-    this.frontWindshieldTransform = mat4.create();
-    let frontWindshieldTranslate = mat4.create();
-    let frontWindshieldRotate = mat4.create();
-    mat4.rotateX(frontWindshieldRotate, frontWindshieldRotate, Math.PI);
-    mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(frontPostTranslateX + 0.11, 0, frontPostTranslateZ/2));
-    mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
-
-
-
-    // Rear windshield
-    this.rightRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, white, white);
+    this.rightRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
     this.rightRearPostTransform = mat4.create();
 
     let rightRearPostRotate = mat4.create();
@@ -65,15 +57,7 @@ class Roof {
     mat4.mul(this.rightRearPostTransform, rightRearPostTranslate, rightRearPostRotate);
 
 
-
-    this.rearWindshield = new Windshield(gl);
-    this.rearWindshieldTransform = mat4.create();
-    mat4.translate(this.rearWindshieldTransform, this.rearWindshieldTransform, vec3.fromValues(-frontPostTranslateX - 0.11, 0, frontPostTranslateZ/2));
-
-
-
-
-    this.leftRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, white, white);
+    this.leftRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
     this.leftRearPostTransform = mat4.create();
 
     let leftRearPostRotate = mat4.create();
@@ -86,49 +70,32 @@ class Roof {
     mat4.mul(this.leftRearPostTransform, leftRearPostTranslate, leftRearPostRotate);
 
 
+    this.addPartToList(this.rightFrontPost, this.rightFrontPostTransform);
+    this.addPartToList(this.leftFrontPost, this.leftFrontPostTransform);
+    this.addPartToList(this.rightRearPost, this.rightRearPostTransform);
+    this.addPartToList(this.leftRearPost, this.leftRearPostTransform);
+
+
+    // Front Windshield
+
+    this.frontWindshield = new Windshield(gl);
+    this.frontWindshieldTransform = mat4.create();
+    let frontWindshieldTranslate = mat4.create();
+    let frontWindshieldRotate = mat4.create();
+    mat4.rotateX(frontWindshieldRotate, frontWindshieldRotate, Math.PI);
+    mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(frontPostTranslateX + 0.11, 0, frontPostTranslateZ/2));
+    mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
+
+    this.addPartToList(this.frontWindshield, this.frontWindshieldTransform);
 
 
 
-    this.tmp = mat4.create();
-  }
+    // Rear windshield
 
-  /**
-   * Draw the object
-   * @param {Number} vertexAttr a handle to a vec3 attribute in the vertex shader for vertex xyz-position
-   * @param {Number} colorAttr  a handle to a vec3 attribute in the vertex shader for vertex rgb-color
-   * @param {Number} modelUniform a handle to a mat4 uniform in the shader for the coordinate frame of the model
-   * @param {mat4} coordFrame a JS mat4 variable that holds the actual coordinate frame of the object
-   */
-  draw(vertexAttr, colorAttr, modelUniform, coordFrame) {
-    /* copy the coordinate frame matrix to the uniform memory in shader */
-    gl.uniformMatrix4fv(modelUniform, false, coordFrame);
+    this.rearWindshield = new Windshield(gl);
+    this.rearWindshieldTransform = mat4.create();
+    mat4.translate(this.rearWindshieldTransform, this.rearWindshieldTransform, vec3.fromValues(-frontPostTranslateX - 0.11, 0, frontPostTranslateZ/2));
 
-
-    // Top
-    mat4.mul(this.tmp, coordFrame, this.roofTopTransform);
-    this.roofTop.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-
-    // Front
-    mat4.mul(this.tmp, coordFrame, this.rightFrontPostTransform);
-    this.rightFrontPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.leftFrontPostTransform);
-    this.leftFrontPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.frontWindshieldTransform);
-    this.frontWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-
-    // Rear
-    mat4.mul(this.tmp, coordFrame, this.rightRearPostTransform);
-    this.rightRearPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.leftRearPostTransform);
-    this.leftRearPost.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
-    mat4.mul(this.tmp, coordFrame, this.rearWindshieldTransform);
-    this.rearWindshield.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
-
+    this.addPartToList(this.rearWindshield, this.rearWindshieldTransform);
   }
 }
