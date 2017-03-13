@@ -23,6 +23,7 @@ function main() {
   gl = WebGLUtils.create3DContext(canvas, null);
 
   canvas.addEventListener("click", changeView);
+  document.addEventListener('mousemove', handleMouseMove);
 
   axisBuff = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, axisBuff);
@@ -94,6 +95,29 @@ function main() {
     /* initiate the render loop */
     render();
   });
+}
+
+function handleMouseMove(evt) {
+  let rangeMultiplier = 20;
+  let x = -(evt.pageX / document.body.getBoundingClientRect().width - 0.5) * rangeMultiplier;
+  let y = (evt.pageY / document.body.getBoundingClientRect().height - 0.5) * rangeMultiplier;
+
+
+  let radius = 2;
+
+  let longitude = x/radius;
+  let latitude = 2 * Math.atan(Math.exp(y/radius)) - Math.PI/2;
+
+  let pX = radius * Math.cos(latitude) * Math.cos(longitude);
+  let pY = radius * Math.cos(latitude) * Math.sin(longitude);
+  let pZ = radius * Math.sin(latitude);
+
+
+  mat4.lookAt(viewMat,
+      vec3.fromValues(pX, pY, pZ), /* eye */
+      vec3.fromValues(0, 0, 0), /* focal point */
+      vec3.fromValues(0, 0, 1)); /* up */
+
 }
 
 function drawScene() {
