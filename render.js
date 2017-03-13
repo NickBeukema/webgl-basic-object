@@ -18,11 +18,22 @@ let currentView = 0;
 var coneSpinAngle;
 var shaderProg;
 
+let addCarButton, carSelectionMenu;
+let cars = [];
+
 function main() {
   canvas = document.getElementById("gl-canvas");
+  canvas.addEventListener("click", changeView);
+
+  addCarButton = document.getElementById('addCar');
+  addCarButton.addEventListener('click', addCar);
+
+  carSelectionMenu = document.getElementById('carSelectionMenu');
+  carSelectionMenu.addEventListener('change', selectCar);
+  
   gl = WebGLUtils.create3DContext(canvas, null);
 
-  canvas.addEventListener("click", changeView);
+
 
   axisBuff = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, axisBuff);
@@ -100,6 +111,9 @@ function drawScene() {
   globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
 
   if (typeof obj !== 'undefined') {
+    for (var i = cars.length - 1; i >= 0; i--) {
+      cars[i].draw(posAttr, colAttr, modelUnif, tmpMat);
+    }
     obj.draw(posAttr, colAttr, modelUnif, tmpMat);
   }
 }
@@ -178,5 +192,25 @@ function changeView() {
 
   if(currentView > 3) {
     currentView = 0;
+  }
+}
+
+function addCar() {
+  cars.push(new Car(gl));
+  updateList();
+}
+
+function selectCar() {
+  let sel = ev.currentTarget.selectedIndex;
+  currentCar = cars[sel];
+}
+
+function updateList() {
+  carSelectionMenu.options.length=0;
+  for (var i = 0; i < cars.length; i++){
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.innerHTML = i;
+    carSelectionMenu.appendChild(opt);
   }
 }
