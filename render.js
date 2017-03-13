@@ -24,6 +24,7 @@ function main() {
 
   canvas.addEventListener("click", changeView);
   document.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('mousewheel', handleScroll);
 
   axisBuff = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, axisBuff);
@@ -97,14 +98,34 @@ function main() {
   });
 }
 
+let viewRadius = 2;
+let currentViewPosX = 0;
+let currentViewPosY = 0;
+let viewRangeMultiplier = 20;
+
+function handleScroll(evt) {
+  let direction = evt.wheelDelta < 0 ? -1 : 1;
+
+  viewRadius += direction/10;
+  if(viewRadius < 2) {
+    viewRadius = 2;
+  } else {
+    viewRangeMultiplier += direction;
+  }
+
+
+  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+}
+
 function handleMouseMove(evt) {
-  let rangeMultiplier = 20;
-  let x = -(evt.pageX / document.body.getBoundingClientRect().width - 0.5) * rangeMultiplier;
-  let y = (evt.pageY / document.body.getBoundingClientRect().height - 0.5) * rangeMultiplier;
 
+  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
 
-  let radius = 2;
+}
 
+function renderViewCoords(pageX, pageY, radius) {
+  x = -(pageX / document.body.getBoundingClientRect().width - 0.5) * viewRangeMultiplier;
+  y = (pageY / document.body.getBoundingClientRect().height - 0.5) * viewRangeMultiplier;
   let longitude = x/radius;
   let latitude = 2 * Math.atan(Math.exp(y/radius)) - Math.PI/2;
 
@@ -117,7 +138,6 @@ function handleMouseMove(evt) {
       vec3.fromValues(pX, pY, pZ), /* eye */
       vec3.fromValues(0, 0, 0), /* focal point */
       vec3.fromValues(0, 0, 1)); /* up */
-
 }
 
 function drawScene() {

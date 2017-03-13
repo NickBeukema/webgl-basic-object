@@ -102,23 +102,53 @@ class Car extends BasicShape {
     this.addPartToList(this.rearBumper, this.rearBumperTransform);
 
     //
-    // Rear Fenders
+    // Rear Fenders and Wheel Wells
     //
 
     let rearFenderX = this.carLength/2;
     let rearFenderY = this.carWidth/2 - 0.05;
     let rearFenderZ = 0.145;
 
+
+    let rearRightTranslateVector = vec3.fromValues(rearFenderX, rearFenderY, rearFenderZ);
+
     this.rearRightFender = new RearFender(gl);
     this.rearRightFenderTranslate = mat4.create();
-    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, vec3.fromValues(rearFenderX, rearFenderY, rearFenderZ));
+    mat4.translate(this.rearRightFenderTranslate, this.rearRightFenderTranslate, rearRightTranslateVector);
+
+    this.rearRightWheelWell = new RearWheelWell(gl);
+    this.rearRightWheelWellTransform = mat4.create();
+    mat4.translate(this.rearRightWheelWellTransform, this.rearRightWheelWellTransform, vec3.fromValues(rearFenderX - 0.25, rearFenderY, rearFenderZ));
+
+    this.addPartToList(this.rearRightFender, this.rearRightFenderTranslate);
+    this.addPartToList(this.rearRightWheelWell, this.rearRightWheelWellTransform);
+
+
+    let rearLeftTranslateVector = vec3.fromValues(rearFenderX, -rearFenderY, rearFenderZ);
+
 
     this.rearLeftFender = new RearFender(gl);
     this.rearLeftFenderTranslate = mat4.create(); 
-    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, vec3.fromValues(rearFenderX, -rearFenderY, rearFenderZ));
+    mat4.translate(this.rearLeftFenderTranslate, this.rearLeftFenderTranslate, rearLeftTranslateVector);
 
-    this.addPartToList(this.rearRightFender, this.rearRightFenderTranslate);
+
+    this.rearLeftWheelWell = new RearWheelWell(gl);
+    this.rearLeftWheelWellTransform = mat4.create();
+
+    let rearLeftWheelWellRotate = mat4.create();
+    let rearLeftWheelWellTranslate = mat4.create();
+
+    mat4.rotateZ(rearLeftWheelWellRotate, rearLeftWheelWellRotate, Math.PI);
+    mat4.translate(rearLeftWheelWellTranslate, rearLeftWheelWellTranslate, vec3.fromValues(rearFenderX - 0.158, -rearFenderY, rearFenderZ));
+
+    mat4.mul(this.rearLeftWheelWellTransform, rearLeftWheelWellTranslate, rearLeftWheelWellRotate);
+
+
     this.addPartToList(this.rearLeftFender, this.rearLeftFenderTranslate);
+    this.addPartToList(this.rearLeftWheelWell, this.rearLeftWheelWellTransform);
+
+
+
 
 
     //
