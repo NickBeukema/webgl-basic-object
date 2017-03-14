@@ -248,13 +248,20 @@ function drawTopView() {
 
 function addCar() {
   let car = new Car(gl);
+
+  if(cars.length % 12 == 0 && cars.length != 0) {
+    startingY = -4.6;
+    startingX -= 2.9;
+  }
+
   let xTranslate = mat4.create();
   let xTranslateVec = vec3.fromValues(startingX, startingY, 0);
   mat4.translate(xTranslate, xTranslate, xTranslateVec);
 
-  if(cars.length < 12) {
-    car.modify(xTranslate);
-  }
+
+  car.modify(xTranslate);
+
+
   startingY = startingY + offset;
 
   cars.push(car);

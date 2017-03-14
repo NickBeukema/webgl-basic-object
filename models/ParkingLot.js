@@ -32,21 +32,26 @@ class ParkingLot extends BasicShape {
     let lineY = -124;
     let lineZ = 0;
 
-    for(let i = 0; i < 13; i++) {
-      let line = new Cube(gl, 1.4, 1, false, this.white9, this.white9);
+    for(let i = 0; i < 4; i++) {
+      for(let j = 0; j < 13; j++) {
+        let line = new Cube(gl, 1.4, 1, false, this.white9, this.white9);
 
-      let lineScale = mat4.create();
-      mat4.scale(lineScale, lineScale, vec3.fromValues(1, 0.04, 0.01));
+        let lineScale = mat4.create();
+        mat4.scale(lineScale, lineScale, vec3.fromValues(1, 0.04, 0.01));
 
-      let lineTranslate = mat4.create();
-      mat4.translate(lineTranslate, lineTranslate, vec3.fromValues(lineX, lineY, lineZ));
+        let lineTranslate = mat4.create();
+        mat4.translate(lineTranslate, lineTranslate, vec3.fromValues(lineX, lineY, lineZ));
 
-      let lineTransform = mat4.create();
-      mat4.mul(lineTransform, lineScale, lineTranslate);
+        let lineTransform = mat4.create();
+        mat4.mul(lineTransform, lineScale, lineTranslate);
 
-      this.addPartToList(line, lineTransform);
+        this.addPartToList(line, lineTransform);
 
-      lineY += 20.7;
+        lineY += 20.7;
+      }
+
+      lineY = -124;
+      lineX -= 2.9;
     }
 
   }
