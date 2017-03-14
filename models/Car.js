@@ -253,6 +253,13 @@ class Car extends BasicShape {
     mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
 
     this.addPartToList(this.roof, this.roofTransform);
+
+    //
+    // Move Car so tires start at z=0
+    //
+    
+    let setMatrixTranslateVec = vec3.fromValues(0,0,0.13);
+    mat4.translate(this.temp, this.temp, setMatrixTranslateVec);
   }
 
   modify(mat4Modifier) {
