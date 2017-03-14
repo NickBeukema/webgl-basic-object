@@ -9,7 +9,6 @@
  - D - move y
  - Q - move z
  - E - move -z
-
  - I - rotate -y
  - J - rotate -z
  - K - rotate y
