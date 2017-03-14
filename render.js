@@ -301,25 +301,71 @@ document.addEventListener("keypress", function(event) {
   }
 
   //q
-  if (event.keyCode == 81) {
-      
+  if (event.keyCode == 113) {
+      let zTranslate = mat4.create();
+      let zTranslateVec = vec3.fromValues(0, 0, .1);
+      mat4.translate(zTranslate, zTranslate, zTranslateVec);
+
+      currentCar.modify(zTranslate);
   }
 
   //e
-  if (event.keyCode == 69) {
-      
+  if (event.keyCode == 101) {
+      let negZTranslate = mat4.create();
+      let negZTranslateVec = vec3.fromValues(0, 0, -.1);
+      mat4.translate(negZTranslate, negZTranslate, negZTranslateVec);
+
+      currentCar.modify(negZTranslate);
   }
 
-  //z
-  if (event.keyCode == 90) {
-      
+  //i rotate y
+  if (event.keyCode == 105) {
+    let yRotate = mat4.create();
+    mat4.rotateY(yRotate, yRotate, Math.PI / 90);
+
+    currentCar.modify(yRotate);
   }
 
-  //x
-  if (event.keyCode == 88) {
-      
+  //k rotate -y
+  if (event.keyCode == 107) {
+    let negYRotate = mat4.create();
+    mat4.rotateY(negYRotate, negYRotate, -Math.PI / 90);
+
+    currentCar.modify(negYRotate);
   }
 
+  //j rotate -z
+  if (event.keyCode == 106) {
+    let negZRotate = mat4.create();
+    mat4.rotateZ(negZRotate, negZRotate, -Math.PI / 90);
+
+    currentCar.modify(negZRotate);
+  }
+
+  //l rotate z
+  if (event.keyCode == 108) {
+    let zRotate = mat4.create();
+    mat4.rotateZ(zRotate, zRotate, Math.PI / 90);
+
+    currentCar.modify(zRotate);
+  }
+
+  //o rotate x
+  if (event.keyCode == 111) {
+    let xRotate = mat4.create();
+    mat4.rotateX(xRotate, xRotate, Math.PI / 90);
+
+    currentCar.modify(xRotate);
+  }
+
+  //u rotate -x
+  if (event.keyCode == 117) {
+    let negXRotate = mat4.create();
+    mat4.rotateX(negXRotate, negXRotate, -Math.PI / 90);
+
+    currentCar.modify(negXRotate);
+  }
+  
   // Space
   if (event.keyCode == 32) {
     currentView++;
