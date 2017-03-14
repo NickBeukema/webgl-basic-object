@@ -290,7 +290,7 @@ document.addEventListener("keypress", function(event) {
   }
 
   //a
-  if (event.keyCode == 97) {
+  if (event.keyCode == 100) {
       let yTranslate = mat4.create();
       let yTranslateVec = vec3.fromValues(0, .1, 0);
       mat4.translate(yTranslate, yTranslate, yTranslateVec);
@@ -299,7 +299,7 @@ document.addEventListener("keypress", function(event) {
   }
 
   //d
-  if (event.keyCode == 100) {
+  if (event.keyCode == 97) {
       let negYTranslate = mat4.create();
       let negYTranslateVec = vec3.fromValues(0, -.1, 0);
       mat4.translate(negYTranslate, negYTranslate, negYTranslateVec);
@@ -342,7 +342,7 @@ document.addEventListener("keypress", function(event) {
   }
 
   //j rotate -z
-  if (event.keyCode == 106) {
+  if (event.keyCode == 108) {
     let negZRotate = mat4.create();
     mat4.rotateZ(negZRotate, negZRotate, -Math.PI / 90);
 
@@ -350,7 +350,7 @@ document.addEventListener("keypress", function(event) {
   }
 
   //l rotate z
-  if (event.keyCode == 108) {
+  if (event.keyCode == 106) {
     let zRotate = mat4.create();
     mat4.rotateZ(zRotate, zRotate, Math.PI / 90);
 
