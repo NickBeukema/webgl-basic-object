@@ -23,16 +23,18 @@ let cars = [];
 
 function main() {
   canvas = document.getElementById("gl-canvas");
-  canvas.addEventListener("click", changeView);
 
   addCarButton = document.getElementById('addCar');
   addCarButton.addEventListener('click', addCar);
 
   carSelectionMenu = document.getElementById('carSelectionMenu');
   carSelectionMenu.addEventListener('change', selectCar);
-  
+
   gl = WebGLUtils.create3DContext(canvas, null);
 
+
+  document.addEventListener('mousedown', handleMouseDown);
+  document.addEventListener('mouseup', handleMouseUp);
   document.addEventListener('mousemove', handleMouseMove);
   window.addEventListener('mousewheel', handleScroll);
 
@@ -122,7 +124,19 @@ function handleScroll(evt) {
   renderViewCoords(evt.pageX, evt.pageY, viewRadius);
 }
 
+isDragging = false;
+
+function handleMouseDown(evt) {
+  isDragging = true;
+}
+
+function handleMouseUp() {
+  isDragging = false;
+}
+
 function handleMouseMove(evt) {
+  if(!isDragging) { return; }
+
   renderViewCoords(evt.pageX, evt.pageY, viewRadius);
 }
 
@@ -221,14 +235,6 @@ function drawTopView() {
   drawScene();
 }
 
-function changeView() {
-  currentView++;
-
-  if(currentView > 3) {
-    currentView = 0;
-  }
-}
-
 function addCar() {
   cars.push(new Car(gl));
   if(cars.length === 1) {
@@ -301,5 +307,14 @@ document.addEventListener("keypress", function(event) {
   //x
   if (event.keyCode == 88) {
       
+  }
+
+  // Space
+  if (event.keyCode == 32) {
+    currentView++;
+
+    if(currentView > 3) {
+      currentView = 0;
+    }
   }
 })
