@@ -264,29 +264,40 @@ function code(e) {
 }
 
 document.addEventListener("keypress", function(event) {
+  console.log(event.keyCode);
   //w
-  console.log(event);
   if (event.keyCode == 119) {
-    let xTranslate = mat4.create();
-    let xTranslateVec = vec3.fromValues(-.1, 0, 0);
-    mat4.translate(xTranslate, xTranslate, xTranslateVec);
+    let negXTranslate = mat4.create();
+    let negXTranslateVec = vec3.fromValues(-.1, 0, 0);
+    mat4.translate(negXTranslate, negXTranslate, negXTranslateVec);
 
-    currentCar.modify(xTranslate);
+    currentCar.modify(negXTranslate);
+  }
+  //s
+  if (event.keyCode == 115) {
+      let xTranslate = mat4.create();
+      let xTranslateVec = vec3.fromValues(.1, 0, 0);
+      mat4.translate(xTranslate, xTranslate, xTranslateVec);
+
+      currentCar.modify(xTranslate);
   }
 
   //a
-  if (event.keyCode == 65) {
-      
-  }
+  if (event.keyCode == 97) {
+      let yTranslate = mat4.create();
+      let yTranslateVec = vec3.fromValues(0, .1, 0);
+      mat4.translate(yTranslate, yTranslate, yTranslateVec);
 
-  //s
-  if (event.keyCode == 83) {
-      
+      currentCar.modify(yTranslate);
   }
 
   //d
-  if (event.keyCode == 68) {
-      
+  if (event.keyCode == 100) {
+      let negYTranslate = mat4.create();
+      let negYTranslateVec = vec3.fromValues(0, -.1, 0);
+      mat4.translate(negYTranslate, negYTranslate, negYTranslateVec);
+
+      currentCar.modify(negYTranslate);
   }
 
   //q
