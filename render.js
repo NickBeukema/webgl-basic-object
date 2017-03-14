@@ -35,10 +35,10 @@ function main() {
   gl = WebGLUtils.create3DContext(canvas, null);
 
 
-  document.addEventListener('mousedown', handleMouseDown);
-  document.addEventListener('mouseup', handleMouseUp);
-  document.addEventListener('mousemove', handleMouseMove);
-  window.addEventListener('mousewheel', handleScroll);
+  canvas.addEventListener('mousedown', handleMouseDown);
+  canvas.addEventListener('mouseup', handleMouseUp);
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mousewheel', handleScroll);
 
 
   axisBuff = gl.createBuffer()
@@ -156,7 +156,6 @@ function renderViewCoords(pageX, pageY, radius) {
   let pY = radius * Math.cos(latitude) * Math.sin(longitude);
   let pZ = radius * Math.sin(latitude);
 
-  console.log(pX, pY, pZ);
   mat4.lookAt(viewMat,
       vec3.fromValues(pX, pY, pZ), /* eye */
       vec3.fromValues(0, 0, 0), /* focal point */
