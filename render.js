@@ -8,6 +8,8 @@ var orthoProjMat, persProjMat, viewMat, topViewMat, carCF, sideViewMat, frontVie
 var axisBuff, tmpMat;
 var globalAxes;
 
+var parkingLot;
+
 let posAttr, colAttr, modelUnif;
 var projUnif, viewUnif;
 
@@ -98,6 +100,10 @@ function main() {
 
     globalAxes = new Axes(gl);
 
+
+    parkingLot = new ParkingLot(gl);
+
+
     /* calculate viewport */
     resizeHandler();
     /* initiate the render loop */
@@ -106,7 +112,7 @@ function main() {
 }
 
 let viewRadius = 3;
-let currentViewPosX = 0;
+let currentViewPosX = -0.5;
 let currentViewPosY = 0;
 let viewRangeMultiplier = 20;
 
@@ -158,7 +164,9 @@ function renderViewCoords(pageX, pageY, radius) {
 }
 
 function drawScene() {
-  globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
+  //globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
+  parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
+
 
   for (var i = cars.length - 1; i >= 0; i--) {
     gl.uniformMatrix4fv(modelUnif, false, cars[i].coordFrame);
