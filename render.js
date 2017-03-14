@@ -23,6 +23,10 @@ var shaderProg;
 let addCarButton, carSelectionMenu;
 let cars = [];
 
+let startingY = -4.6;
+let startingX = 4.2;
+let offset = .83;
+
 function main() {
   canvas = document.getElementById("gl-canvas");
 
@@ -243,7 +247,18 @@ function drawTopView() {
 }
 
 function addCar() {
-  cars.push(new Car(gl));
+  let car = new Car(gl);
+  let xTranslate = mat4.create();
+  let xTranslateVec = vec3.fromValues(startingX, startingY, 0);
+  mat4.translate(xTranslate, xTranslate, xTranslateVec);
+
+  if(cars.length < 12) {
+    car.modify(xTranslate);
+  }
+  startingY = startingY + offset;
+
+  cars.push(car);
+
   if(cars.length === 1) {
     currentCar = cars[0];
   }
