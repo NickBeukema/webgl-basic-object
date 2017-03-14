@@ -17,7 +17,7 @@ class Tire extends BasicShape {
     // Rubber
     //
 
-    this.rubber = new Torus(gl, 0.1, 0.02, 20, 20, false, grey, lighterGrey);
+    this.rubber = new Torus(gl, 0.1, 0.02, 10, 20, false, grey, lighterGrey);
     this.rubberTransform = tireRotate;
     this.addPartToList(this.rubber, this.rubberTransform);
 
@@ -52,8 +52,8 @@ class Tire extends BasicShape {
     mat4.mul(this.tireCenterFrontTransform, tireCenterFrontTranslate, tireRotate) // Rotate, then translate
     mat4.mul(this.tireCenterRearTransform, tireCenterRearTranslate, tireRotate) // Rotate, then translate
 
-    this.tireCenterFront = new TruncCone(gl, 0.03, 0.03, 0.01, 20, 1, grey, grey)
-    this.tireCenterRear = new TruncCone(gl, 0.03, 0.03, 0.01, 20, 1, grey, grey)
+    this.tireCenterFront = new TruncCone(gl, 0.03, 0.03, 0.01, 10, 1, grey, grey)
+    this.tireCenterRear = new TruncCone(gl, 0.03, 0.03, 0.01, 10, 1, grey, grey)
 
     this.addPartToList(this.tireCenterFront, this.tireCenterFrontTransform);
     this.addPartToList(this.tireCenterRear, this.tireCenterRearTransform);

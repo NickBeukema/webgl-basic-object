@@ -6,7 +6,7 @@ class Trunk extends BasicShape {
   constructor (gl) {
     super(gl);
 
-    let trunk = new Cube(gl, .4, 4, false, this.white, this.white);
+    let trunk = new Cube(gl, .4, 1, false, this.white, this.white);
     let trunkScale = mat4.create();
     mat4.scale(trunkScale, trunkScale, vec3.fromValues(0.97, 1, 0.1));
 

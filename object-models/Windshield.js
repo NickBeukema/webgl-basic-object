@@ -8,7 +8,7 @@ class Windshield extends BasicShape {
 
     let white = vec4.fromValues(0.7,0.7,0.7,.4);
 
-    this.windshield = new Cube(gl, .4, 4, false, white, white);
+    this.windshield = new Cube(gl, .4, 1, false, white, white);
 
     let windshieldScale = mat4.create();
     mat4.scale(windshieldScale, windshieldScale, vec3.fromValues(0.85, 1, 0.02));

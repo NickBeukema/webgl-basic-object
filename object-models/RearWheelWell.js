@@ -15,7 +15,7 @@ class RearWheelWell extends BasicShape {
 
     // Well Backing
 
-    let wheelWellBack = new Cube(gl, 0.4, 4, false, grey, grey);
+    let wheelWellBack = new Cube(gl, 0.4, 1, false, grey, grey);
     let wheelWellBackTransform = mat4.create();
 
     let wheelWellBackScale = mat4.create();
@@ -31,7 +31,7 @@ class RearWheelWell extends BasicShape {
 
     // Well Front
 
-    let wheelWellFront = new Cube(gl, 0.4, 4, false, grey, grey);
+    let wheelWellFront = new Cube(gl, 0.4, 1, false, grey, grey);
     let wheelWellFrontTransform = mat4.create();
 
     let wheelWellFrontScale = mat4.create();
@@ -46,7 +46,7 @@ class RearWheelWell extends BasicShape {
 
     // Well Rear
 
-    let wheelWellRear = new Cube(gl, 0.4, 4, false, grey, grey);
+    let wheelWellRear = new Cube(gl, 0.4, 1, false, grey, grey);
     let wheelWellRearTransform = mat4.create();
 
     let wheelWellRearScale = mat4.create();
@@ -61,7 +61,7 @@ class RearWheelWell extends BasicShape {
 
     // Well Top
 
-    let wheelWellTop = new Cube(gl, 0.4, 4, false, grey, grey);
+    let wheelWellTop = new Cube(gl, 0.4, 1, false, grey, grey);
     let wheelWellTopTransform = mat4.create();
 
     let wheelWellTopScale = mat4.create();

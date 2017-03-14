@@ -7,7 +7,7 @@ class Roof extends BasicShape {
     super(gl);
 
 
-    this.roofTop = new Cube(gl, .4, 4, false, this.white, this.white);
+    this.roofTop = new Cube(gl, .4, 1, false, this.white, this.white);
     this.roofTopTransform = mat4.create();
     mat4.scale(this.roofTopTransform, this.roofTopTransform, vec3.fromValues(1, 1, 0.1));
     this.addPartToList(this.roofTop, this.roofTopTransform);
@@ -19,7 +19,7 @@ class Roof extends BasicShape {
     let frontPostTranslateZ = -0.25;
 
     // Windshield and posts -- could be refactored out into another shape
-    this.rightFrontPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
+    this.rightFrontPost = new TruncCone(gl, 0.01, 0.01, 0.35, 4, 1, this.white, this.white);
     this.rightFrontPostTransform = mat4.create();
 
     let rightFrontPostRotate = mat4.create();
@@ -31,7 +31,7 @@ class Roof extends BasicShape {
 
     mat4.mul(this.rightFrontPostTransform, rightFrontPostTranslate, rightFrontPostRotate);
 
-    this.leftFrontPost = new TruncCone(gl, 0.01, 0.01, 0.33, 10, 1, this.white, this.white);
+    this.leftFrontPost = new TruncCone(gl, 0.01, 0.01, 0.33, 4, 1, this.white, this.white);
     this.leftFrontPostTransform = mat4.create();
 
     let leftFrontPostRotate = mat4.create();
@@ -44,7 +44,7 @@ class Roof extends BasicShape {
     mat4.mul(this.leftFrontPostTransform, leftFrontPostTranslate, leftFrontPostRotate);
 
 
-    this.rightRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
+    this.rightRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 4, 1, this.white, this.white);
     this.rightRearPostTransform = mat4.create();
 
     let rightRearPostRotate = mat4.create();
@@ -57,7 +57,7 @@ class Roof extends BasicShape {
     mat4.mul(this.rightRearPostTransform, rightRearPostTranslate, rightRearPostRotate);
 
 
-    this.leftRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 10, 1, this.white, this.white);
+    this.leftRearPost = new TruncCone(gl, 0.01, 0.01, 0.35, 4, 1, this.white, this.white);
     this.leftRearPostTransform = mat4.create();
 
     let leftRearPostRotate = mat4.create();
