@@ -11,11 +11,12 @@ html, body {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
+  overflow:hidden;
 }
 
 .canvas {
   display: block;
   margin: auto;
   width: 100%;
-  max-height: 100%;
+  max-height: calc(100% - 20px);
 }
