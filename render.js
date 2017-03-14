@@ -79,7 +79,7 @@ function main() {
     tmpMat = mat4.create();
 
     mat4.lookAt(viewMat,
-        vec3.fromValues(2, 2, 2), /* eye */
+        vec3.fromValues(10, 10, 7), /* eye */
         vec3.fromValues(0, 0, 0), /* focal point */
         vec3.fromValues(0, 0, 1)); /* up */
 
@@ -156,7 +156,7 @@ function renderViewCoords(pageX, pageY, radius) {
   let pY = radius * Math.cos(latitude) * Math.sin(longitude);
   let pZ = radius * Math.sin(latitude);
 
-
+  console.log(pX, pY, pZ);
   mat4.lookAt(viewMat,
       vec3.fromValues(pX, pY, pZ), /* eye */
       vec3.fromValues(0, 0, 0), /* focal point */
