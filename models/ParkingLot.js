@@ -28,8 +28,8 @@ class ParkingLot extends BasicShape {
 
 
 
-    let lineX = 3.9;
-    let lineY = -120;
+    let lineX = 4.3;
+    let lineY = -124;
     let lineZ = 0;
 
     for(let i = 0; i < 13; i++) {
@@ -46,7 +46,7 @@ class ParkingLot extends BasicShape {
 
       this.addPartToList(line, lineTransform);
 
-      lineY += 20;
+      lineY += 20.7;
     }
 
   }

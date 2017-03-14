@@ -8,6 +8,8 @@ class BasicShape {
     let randomWhite = (Math.random() * 0.2) + 0.6;
     let randomGrey = (Math.random() * 0.2) + 0.2;
 
+    this.red = vec3.fromValues(randomWhite, randomGrey, randomGrey);
+
     this.white = this.greyFromPercent(randomWhite);
     this.grey = this.greyFromPercent(randomGrey);
 
