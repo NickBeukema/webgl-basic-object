@@ -67,16 +67,6 @@ class Car extends BasicShape {
 
     this.addPartToList(this.frontBumper, this.frontBumperTransform);
 
-    //
-    // Roof
-    //
-
-    this.roof = new Roof(gl);
-    this.roofTransform = mat4.create();
-    let roofTranslateVec = vec3.fromValues(0,0,0.5);
-    mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
-
-    this.addPartToList(this.roof, this.roofTransform);
 
     //
     // Trunk
@@ -252,6 +242,17 @@ class Car extends BasicShape {
 
 
     this.addPartToList(this.floor, this.floorTranslate);
+    
+    //
+    // Roof
+    //
+
+    this.roof = new Roof(gl);
+    this.roofTransform = mat4.create();
+    let roofTranslateVec = vec3.fromValues(0,0,0.5);
+    mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
+
+    this.addPartToList(this.roof, this.roofTransform);
   }
 
   modify(mat4Modifier) {
