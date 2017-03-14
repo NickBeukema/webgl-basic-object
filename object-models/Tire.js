@@ -13,21 +13,19 @@ class Tire extends BasicShape {
     let tireRotate = mat4.create();
     mat4.rotateX(tireRotate, tireRotate, Math.PI/2);
 
-
     //
     // Rubber
     //
 
-    this.rubber = new Torus(gl, 0.1, 0.02, 100, 100, false, grey, lighterGrey);
+    this.rubber = new Torus(gl, 0.1, 0.02, 20, 20, false, grey, lighterGrey);
     this.rubberTransform = tireRotate;
     this.addPartToList(this.rubber, this.rubberTransform);
-
 
     //
     // Hub Cap
     //
 
-    this.hubCap = new TruncCone(gl, 0.08, 0.08, 0.01, 100, 1, white, white);
+    this.hubCap = new TruncCone(gl, 0.08, 0.08, 0.01, 20, 1, white, white);
 
     let hubCapScale = mat4.create();
     mat4.scale(hubCapScale, hubCapScale, vec3.fromValues(1,1,0.2));
@@ -54,8 +52,8 @@ class Tire extends BasicShape {
     mat4.mul(this.tireCenterFrontTransform, tireCenterFrontTranslate, tireRotate) // Rotate, then translate
     mat4.mul(this.tireCenterRearTransform, tireCenterRearTranslate, tireRotate) // Rotate, then translate
 
-    this.tireCenterFront = new TruncCone(gl, 0.03, 0.03, 0.01, 100, 1, grey, grey)
-    this.tireCenterRear = new TruncCone(gl, 0.03, 0.03, 0.01, 100, 1, grey, grey)
+    this.tireCenterFront = new TruncCone(gl, 0.03, 0.03, 0.01, 20, 1, grey, grey)
+    this.tireCenterRear = new TruncCone(gl, 0.03, 0.03, 0.01, 20, 1, grey, grey)
 
     this.addPartToList(this.tireCenterFront, this.tireCenterFrontTransform);
     this.addPartToList(this.tireCenterRear, this.tireCenterRearTransform);

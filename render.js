@@ -94,16 +94,10 @@ function main() {
         vec3.fromValues(0,0,0),
         vec3.fromValues(0,0,1));
 
-    gl.uniformMatrix4fv(modelUnif, false, carCF);
-
     globalAxes = new Axes(gl);
-    coneSpinAngle = 0;
-
-    obj = new Car(gl);
 
     /* calculate viewport */
     resizeHandler();
-
     /* initiate the render loop */
     render();
   });
@@ -129,9 +123,7 @@ function handleScroll(evt) {
 }
 
 function handleMouseMove(evt) {
-
   renderViewCoords(evt.pageX, evt.pageY, viewRadius);
-
 }
 
 function renderViewCoords(pageX, pageY, radius) {
@@ -154,11 +146,9 @@ function renderViewCoords(pageX, pageY, radius) {
 function drawScene() {
   globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
 
-  if (typeof obj !== 'undefined') {
-    for (var i = cars.length - 1; i >= 0; i--) {
-      cars[i].draw(posAttr, colAttr, modelUnif, tmpMat);
-    }
-    obj.draw(posAttr, colAttr, modelUnif, tmpMat);
+  for (var i = cars.length - 1; i >= 0; i--) {
+    gl.uniformMatrix4fv(modelUnif, false, cars[i].coordFrame);
+    cars[i].draw(posAttr, colAttr, modelUnif, cars[i].temp);
   }
 }
 
@@ -241,10 +231,13 @@ function changeView() {
 
 function addCar() {
   cars.push(new Car(gl));
+  if(cars.length === 1) {
+    currentCar = cars[0];
+  }
   updateList();
 }
 
-function selectCar() {
+function selectCar(ev) {
   let sel = ev.currentTarget.selectedIndex;
   currentCar = cars[sel];
 }
@@ -258,3 +251,55 @@ function updateList() {
     carSelectionMenu.appendChild(opt);
   }
 }
+
+function code(e) {
+    e = e || window.event;
+    return(e.keyCode || e.which);
+}
+
+document.addEventListener("keypress", function(event) {
+  //w
+  console.log(event);
+  if (event.keyCode == 119) {
+    let xTranslate = mat4.create();
+    let xTranslateVec = vec3.fromValues(-.1, 0, 0);
+    mat4.translate(xTranslate, xTranslate, xTranslateVec);
+
+    currentCar.modify(xTranslate);
+  }
+
+  //a
+  if (event.keyCode == 65) {
+      
+  }
+
+  //s
+  if (event.keyCode == 83) {
+      
+  }
+
+  //d
+  if (event.keyCode == 68) {
+      
+  }
+
+  //q
+  if (event.keyCode == 81) {
+      
+  }
+
+  //e
+  if (event.keyCode == 69) {
+      
+  }
+
+  //z
+  if (event.keyCode == 90) {
+      
+  }
+
+  //x
+  if (event.keyCode == 88) {
+      
+  }
+})

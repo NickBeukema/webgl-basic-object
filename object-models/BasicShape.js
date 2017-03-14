@@ -2,6 +2,9 @@ class BasicShape {
   constructor(gl) {
     this.parts = [];
     this.tmp = mat4.create();
+    this.coordFrame = mat4.create();
+    this.temp = mat4.create();
+
     let randomWhite = (Math.random() * 0.2) + 0.6;
     let randomGrey = (Math.random() * 0.2) + 0.2;
 
@@ -28,12 +31,9 @@ class BasicShape {
   }
 
   draw(vertexAttr, colorAttr, modelUniform, coordFrame) {
-    gl.uniformMatrix4fv(modelUniform, false, coordFrame);
-
     this.parts.forEach(part => {
       mat4.mul(this.tmp, coordFrame, part.transform);
       part.object.draw(vertexAttr, colorAttr, modelUniform, this.tmp);
     });
-
   }
 }

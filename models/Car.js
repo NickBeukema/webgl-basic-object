@@ -5,7 +5,6 @@ class Car extends BasicShape {
    */
   constructor (gl) {
     super(gl);
-
     this.carWidth = 0.5;
     this.carLength = 1.5;
 
@@ -147,10 +146,6 @@ class Car extends BasicShape {
     this.addPartToList(this.rearLeftFender, this.rearLeftFenderTranslate);
     this.addPartToList(this.rearLeftWheelWell, this.rearLeftWheelWellTransform);
 
-
-
-
-
     //
     // Front Fenders and Wheel Wells
     //
@@ -257,8 +252,9 @@ class Car extends BasicShape {
 
 
     this.addPartToList(this.floor, this.floorTranslate);
+  }
 
-    this.tmp = mat4.create();
-
+  modify(mat4Modifier) {
+    mat4.mul(this.temp, this.temp, mat4Modifier);
   }
 }
