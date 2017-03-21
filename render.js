@@ -292,16 +292,44 @@ function code(e) {
     return(e.keyCode || e.which);
 }
 
-document.addEventListener("keypress", function(event) {
-  console.log(event.keyCode);
-  //w
-  if (event.keyCode == 119) {
+let keyMap = {}
+onkeydown = onkeyup = function(e){
+  console.log(e.type, e.keyCode);
+
+  e = e || event; // to deal with IE
+  keyMap[e.keyCode] = e.type == 'keydown';
+
+  if(keyMap[87]) {
     let negXTranslate = mat4.create();
     let negXTranslateVec = vec3.fromValues(-.1, 0, 0);
     mat4.translate(negXTranslate, negXTranslate, negXTranslateVec);
 
     currentCar.modify(negXTranslate);
   }
+
+  //l rotate z
+  if(keyMap[74]) {
+    let zRotate = mat4.create();
+    mat4.rotateZ(zRotate, zRotate, Math.PI / 90);
+
+    currentCar.modify(zRotate);
+  }
+}
+
+document.addEventListener("keydown", onkeydown);
+document.addEventListener("keyup", onkeyup);
+
+
+document.addEventListener("keypress", function(event) {
+  console.log(event.keyCode);
+  //w
+  //if (event.keyCode == 119) {
+    //let negXTranslate = mat4.create();
+    //let negXTranslateVec = vec3.fromValues(-.1, 0, 0);
+    //mat4.translate(negXTranslate, negXTranslate, negXTranslateVec);
+
+    //currentCar.modify(negXTranslate);
+  //}
   //s
   if (event.keyCode == 115) {
       let xTranslate = mat4.create();
@@ -371,13 +399,6 @@ document.addEventListener("keypress", function(event) {
     currentCar.modify(negZRotate);
   }
 
-  //l rotate z
-  if (event.keyCode == 106) {
-    let zRotate = mat4.create();
-    mat4.rotateZ(zRotate, zRotate, Math.PI / 90);
-
-    currentCar.modify(zRotate);
-  }
 
   //o rotate x
   if (event.keyCode == 111) {
