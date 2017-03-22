@@ -7,7 +7,8 @@ class Car extends BasicShape {
     super(gl);
     this.carWidth = 0.5;
     this.carLength = 1.5;
-
+    this.camera = mat4.create();
+    this.cameraTemp = mat4.create();
     //
     // Tires
     //
@@ -260,9 +261,15 @@ class Car extends BasicShape {
     
     let setMatrixTranslateVec = vec3.fromValues(0,0,0.13);
     mat4.translate(this.temp, this.temp, setMatrixTranslateVec);
+    this.modify(mat4.create());
   }
 
   modify(mat4Modifier) {
     mat4.mul(this.temp, this.temp, mat4Modifier);
+    mat4.mul(this.camera, this.camera, mat4Modifier);
+  }
+
+  animate() {
+
   }
 }
