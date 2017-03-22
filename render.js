@@ -21,7 +21,7 @@ var coneSpinAngle;
 var shaderProg;
 
 let addCarButton, carSelectionMenu;
-let cars = [];
+let currentCar = null
 
 let startingY = -4.6;
 let startingX = 4.2;
@@ -30,19 +30,16 @@ let offset = .83;
 function main() {
   canvas = document.getElementById("gl-canvas");
 
-  addCarButton = document.getElementById('addCar');
-  addCarButton.addEventListener('click', addCar);
-
-  carSelectionMenu = document.getElementById('carSelectionMenu');
-  carSelectionMenu.addEventListener('change', selectCar);
+  // addCarButton = document.getElementById('addCar');
+  // addCarButton.addEventListener('click', addCar);
 
   gl = WebGLUtils.create3DContext(canvas, null);
+  addCar();
 
-
-  canvas.addEventListener('mousedown', handleMouseDown);
-  canvas.addEventListener('mouseup', handleMouseUp);
-  canvas.addEventListener('mousemove', handleMouseMove);
-  canvas.addEventListener('mousewheel', handleScroll);
+  // canvas.addEventListener('mousedown', handleMouseDown);
+  // canvas.addEventListener('mouseup', handleMouseUp);
+  // canvas.addEventListener('mousemove', handleMouseMove);
+  // canvas.addEventListener('mousewheel', handleScroll);
 
 
   axisBuff = gl.createBuffer()
@@ -75,36 +72,14 @@ function main() {
 
     orthoProjMat = mat4.create();
     persProjMat = mat4.create();
-    viewMat = mat4.create();
-    topViewMat = mat4.create();
-    sideViewMat = mat4.create();
-    frontViewMat = mat4.create();
-    carCF = mat4.create();
-    tmpMat = mat4.create();
-
-    mat4.lookAt(viewMat,
-        vec3.fromValues(10, 10, 7), /* eye */
-        vec3.fromValues(0, 0, 0), /* focal point */
+    
+    mat4.lookAt(currentCar.camera,
+        vec3.fromValues(2, 0, 1), /* eye */
+        vec3.fromValues(1, 0, .5), /* focal point */
         vec3.fromValues(0, 0, 1)); /* up */
-
-    mat4.lookAt(topViewMat,
-        vec3.fromValues(0,0,2),
-        vec3.fromValues(0,0,0),
-        vec3.fromValues(0,1,0));
-
-    mat4.lookAt(sideViewMat,
-        vec3.fromValues(0,2,0),
-        vec3.fromValues(0,0,0),
-        vec3.fromValues(0,0,1));
-
-    mat4.lookAt(frontViewMat,
-        vec3.fromValues(2,0,0),
-        vec3.fromValues(0,0,0),
-        vec3.fromValues(0,0,1));
+    
 
     globalAxes = new Axes(gl);
-
-
     parkingLot = new ParkingLot(gl);
 
 
@@ -120,82 +95,77 @@ let currentViewPosX = -0.5;
 let currentViewPosY = 0;
 let viewRangeMultiplier = 20;
 
-function handleScroll(evt) {
-  let direction = evt.wheelDelta < 0 ? -1 : 1;
+// function handleScroll(evt) {
+//   let direction = evt.wheelDelta < 0 ? -1 : 1;
 
-  viewRadius += direction/10;
-  if(viewRadius < 2) {
-    viewRadius = 2;
-  } else {
-    viewRangeMultiplier += direction;
-  }
+//   viewRadius += direction/10;
+//   if(viewRadius < 2) {
+//     viewRadius = 2;
+//   } else {
+//     viewRangeMultiplier += direction;
+//   }
 
 
-  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+//   renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+// }
+
+// isDragging = false;
+
+// function handleMouseDown(evt) {
+//   isDragging = true;
+// }
+
+// function handleMouseUp() {
+//   isDragging = false;
+// }
+
+// function handleMouseMove(evt) {
+//   if(!isDragging) { return; }
+
+//   renderViewCoords(evt.pageX, evt.pageY, viewRadius);
+// }
+
+// function renderViewCoords(pageX, pageY, radius) {
+//   x = -(pageX / document.body.getBoundingClientRect().width - 0.5) * viewRangeMultiplier;
+//   y = (pageY / document.body.getBoundingClientRect().height - 0.5) * viewRangeMultiplier;
+//   let longitude = x/radius;
+//   let latitude = 2 * Math.atan(Math.exp(y/radius)) - Math.PI/2;
+
+//   let pX = radius * Math.cos(latitude) * Math.cos(longitude);
+//   let pY = radius * Math.cos(latitude) * Math.sin(longitude);
+//   let pZ = radius * Math.sin(latitude);
+
+//   mat4.lookAt(currentCar.camera,
+//       vec3.fromValues(pX, pY, pZ), /* eye */
+//       vec3.fromValues(0, 0, 0), /* focal point */
+//       vec3.fromValues(0, 0, 1)); /* up */
+// }
+
+
+function render(now) {
+  gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+  draw3D(now);
+
+  setTimeout(function() {
+    requestAnimationFrame(render);
+  }, 200);
 }
 
-isDragging = false;
-
-function handleMouseDown(evt) {
-  isDragging = true;
-}
-
-function handleMouseUp() {
-  isDragging = false;
-}
-
-function handleMouseMove(evt) {
-  if(!isDragging) { return; }
-
-  renderViewCoords(evt.pageX, evt.pageY, viewRadius);
-}
-
-function renderViewCoords(pageX, pageY, radius) {
-  x = -(pageX / document.body.getBoundingClientRect().width - 0.5) * viewRangeMultiplier;
-  y = (pageY / document.body.getBoundingClientRect().height - 0.5) * viewRangeMultiplier;
-  let longitude = x/radius;
-  let latitude = 2 * Math.atan(Math.exp(y/radius)) - Math.PI/2;
-
-  let pX = radius * Math.cos(latitude) * Math.cos(longitude);
-  let pY = radius * Math.cos(latitude) * Math.sin(longitude);
-  let pZ = radius * Math.sin(latitude);
-
-  mat4.lookAt(viewMat,
-      vec3.fromValues(pX, pY, pZ), /* eye */
-      vec3.fromValues(0, 0, 0), /* focal point */
-      vec3.fromValues(0, 0, 1)); /* up */
+function draw3D(now) {
+  gl.uniformMatrix4fv(projUnif, false, persProjMat);
+  gl.uniformMatrix4fv(viewUnif, false, currentCar.camera);
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  drawScene(now);
 }
 
 function drawScene() {
-  //globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
+  globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
   parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
 
-
-  for (var i = cars.length - 1; i >= 0; i--) {
-    gl.uniformMatrix4fv(modelUnif, false, cars[i].coordFrame);
-    cars[i].draw(posAttr, colAttr, modelUnif, cars[i].temp);
-  }
-}
-
-function render() {
-  gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-
-  switch(currentView) {
-    case 0:
-      draw3D();
-      break;
-    case 1:
-      drawTopView();
-      break;
-    case 2:
-      drawSideView();
-      break;
-    case 3:
-      drawFrontView();
-      break;
-  }
-
-  requestAnimationFrame(render);
+  currentCar.animate();
+  gl.uniformMatrix4fv(modelUnif, false, currentCar.coordFrame);
+  currentCar.draw(posAttr, colAttr, modelUnif, currentCar.temp);
+  //currentCar.moveCamera();
 }
 
 function resizeHandler() {
@@ -215,76 +185,10 @@ function resizeHandler() {
     perspectiveRatio,  // Aspect Ratio
     1,                 // near plane at Z=1
     20);               // far plane at Z=20
-
-}
-
-function draw3D() {
-  gl.uniformMatrix4fv(projUnif, false, persProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, viewMat)
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  drawScene();
-}
-
-function drawSideView() {
-  gl.uniformMatrix4fv(projUnif, false, orthoProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, sideViewMat);
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  drawScene();
-}
-
-function drawFrontView() {
-  gl.uniformMatrix4fv(projUnif, false, orthoProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, frontViewMat);
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  drawScene();
-}
-
-function drawTopView() {
-  gl.uniformMatrix4fv(projUnif, false, orthoProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, topViewMat);
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  drawScene();
 }
 
 function addCar() {
-  let car = new Car(gl);
-
-  if(cars.length % 12 == 0 && cars.length != 0) {
-    startingY = -4.6;
-    startingX -= 2.9;
-  }
-
-  let xTranslate = mat4.create();
-  let xTranslateVec = vec3.fromValues(startingX, startingY, 0);
-  mat4.translate(xTranslate, xTranslate, xTranslateVec);
-
-
-  car.modify(xTranslate);
-
-
-  startingY = startingY + offset;
-
-  cars.push(car);
-
-  if(cars.length === 1) {
-    currentCar = cars[0];
-  }
-  updateList();
-}
-
-function selectCar(ev) {
-  let sel = ev.currentTarget.selectedIndex;
-  currentCar = cars[sel];
-}
-
-function updateList() {
-  carSelectionMenu.options.length=0;
-  for (var i = 0; i < cars.length; i++){
-    var opt = document.createElement('option');
-    opt.value = i;
-    opt.innerHTML = i;
-    carSelectionMenu.appendChild(opt);
-  }
+  currentCar = new Car(gl);
 }
 
 function code(e) {
@@ -294,7 +198,7 @@ function code(e) {
 
 let keyMap = {}
 onkeydown = onkeyup = function(e){
-  console.log(e.type, e.keyCode);
+  //console.log(e.type, e.keyCode);
 
   e = e || event; // to deal with IE
   keyMap[e.keyCode] = e.type == 'keydown';
@@ -303,7 +207,7 @@ onkeydown = onkeyup = function(e){
     let negXTranslate = mat4.create();
     let negXTranslateVec = vec3.fromValues(-.1, 0, 0);
     mat4.translate(negXTranslate, negXTranslate, negXTranslateVec);
-
+    
     currentCar.modify(negXTranslate);
   }
 
@@ -321,7 +225,7 @@ document.addEventListener("keyup", onkeyup);
 
 
 document.addEventListener("keypress", function(event) {
-  console.log(event.keyCode);
+  // console.log(event.keyCode);
   //w
   //if (event.keyCode == 119) {
     //let negXTranslate = mat4.create();
