@@ -63,7 +63,9 @@ class BasicShape {
         gl.uniform1f(lightingUnifs.ambCoeffUnif, part.ambCoeff);
       }
 
-      mat4.mul(this.tmp, coordFrame, part.transform);
+      mat4.mul(this.tmp, this.coordFrame, part.transform);
+
+      mat4.mul(this.tmp, coordFrame, this.tmp);
 
       let tmpMat = mat4.create();
       let normalMat = mat3.create();
@@ -73,6 +75,19 @@ class BasicShape {
 
       part.object.draw(vertexAttr, colorAttr, modelUniform, this.tmp, lightingUnifs, posUnifs, viewMat);
     });
+
+  }
+
+  triggerAnimation(distance, turnDirection) {
+    if(this.animate) {
+      this.animate(distance, turnDirection);
+    } else {
+      this.parts.forEach(part => {
+        if(part.object.triggerAnimation) {
+          part.object.triggerAnimation(distance, turnDirection);
+        }
+      });
+    }
   }
 
   drawNormal (vertexAttr, colorAttr, modelUniform, coordFrame) {

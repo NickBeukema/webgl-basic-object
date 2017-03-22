@@ -249,6 +249,17 @@ function reactToKeys() {
 
   let isMoving = keyMap[keys.w] || keyMap[keys.s];
 
+  let isTurningLeft = keyMap[keys.a];
+  let isTurningRight = keyMap[keys.d];
+
+  let turnDirection = 0;
+  if(isTurningLeft) {
+    turnDirection = -1;
+  } else if(isTurningRight) {
+    turnDirection = 1;
+  }
+
+  currentCar.triggerAnimation(currentSpeed/2, turnDirection);
 
   if(keyMap[keys.w]) {
     let negXTranslate = mat4.create();
@@ -284,7 +295,6 @@ function reactToKeys() {
       vec[0] = vec[0] + x;
       vec[1] = vec[1] + y;
     });
-
 
     currentCar.modify(xTranslate);
     if(Math.abs(currentSpeed) <= maxSpeed) {

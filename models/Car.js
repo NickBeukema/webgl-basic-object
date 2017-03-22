@@ -37,19 +37,19 @@ class Car extends BasicShape {
     let tirePosY = (this.carWidth/2.0) - 0.05;
 
 
-    this.frontRightTire = new Tire(gl);
+    this.frontRightTire = new Tire(gl, defaultLighting);
     this.frontRightTireTranslate = mat4.create();
     mat4.translate(this.frontRightTireTranslate, this.frontRightTireTranslate, vec3.fromValues(-tirePosX,-tirePosY, 0));
 
-    this.frontLeftTire = new Tire(gl);
+    this.frontLeftTire = new Tire(gl, defaultLighting);
     this.frontLeftTireTranslate = mat4.create();
     mat4.translate(this.frontLeftTireTranslate, this.frontLeftTireTranslate, vec3.fromValues(-tirePosX,tirePosY, 0));
 
-    this.rearRightTire = new Tire(gl);
+    this.rearRightTire = new Tire(gl, defaultLighting);
     this.rearRightTireTranslate = mat4.create();
     mat4.translate(this.rearRightTireTranslate, this.rearRightTireTranslate, vec3.fromValues(tirePosXRear,tirePosY, 0));
 
-    this.rearLeftTire = new Tire(gl);
+    this.rearLeftTire = new Tire(gl, defaultLighting);
     this.rearLeftTireTranslate = mat4.create();
     mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(tirePosXRear,-tirePosY, 0));
 
@@ -296,8 +296,4 @@ class Car extends BasicShape {
     vec3Operation(this.cameraPos);
   }
 
-
-  animate() {
-
-  }
 }

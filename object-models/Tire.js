@@ -3,23 +3,32 @@ class Tire extends BasicShape {
    * Create a Tire
    * @param {Object} gl         the current WebGL context
    */
-  constructor (gl) {
+  constructor (gl, defaultLighting) {
     super(gl);
 
     let grey = vec3.fromValues(0.1,0.1,0.1);
     let lighterGrey = vec3.fromValues(0.2,0.2,0.2);
     let white = vec3.fromValues(0.6,0.6,0.6);
 
+    this.radius = 0.1 + 0.01;
+
     let tireRotate = mat4.create();
     mat4.rotateX(tireRotate, tireRotate, Math.PI/2);
 
+    let tireLighting = {
+      tint: grey,
+      shinyness: 10,
+      diffCoeff: 0.01,
+      specCoeff: 0.1
+    }
     //
     // Rubber
     //
 
-    this.rubber = new Torus(gl, 0.1, 0.02, 10, 20, false, grey, lighterGrey);
+    //this.rubber = new Torus(gl, 0.1, 0.02, 10, 20, false, grey, lighterGrey);
+    this.rubber = new Torus2(gl, 0.1, 0.02, 10, 20);
     this.rubberTransform = tireRotate;
-    this.addPartToList(this.rubber, this.rubberTransform);
+    this.addPartToList(this.rubber, this.rubberTransform, tireLighting);
 
     //
     // Hub Cap
@@ -33,7 +42,7 @@ class Tire extends BasicShape {
     this.hubCapTransform = mat4.create();
     mat4.mul(this.hubCapTransform, tireRotate, hubCapScale);
 
-    this.addPartToList(this.hubCap, this.hubCapTransform);
+    this.addPartToList(this.hubCap, this.hubCapTransform, defaultLighting);
 
 
     //
@@ -57,5 +66,25 @@ class Tire extends BasicShape {
 
     this.addPartToList(this.tireCenterFront, this.tireCenterFrontTransform);
     this.addPartToList(this.tireCenterRear, this.tireCenterRearTransform);
+
+    this.currentTurn = 0;
+    this.maxTurn = 0.01;
+    this.turnStep = 0.005;
+  }
+
+  animate(distance, turnDirection) {
+    let radians = distance/this.radius;
+
+    //let turn = (this.maxTurn - Math.abs(this.currentTurn)) * turnDirection;
+
+    //if(Math.abs(turn) > 0.004) {
+      //this.currentTurn = turn;
+    //}
+
+    let turn = turnDirection * this.turnStep;
+
+
+    //mat4.rotateZ(this.coordFrame, this.coordFrame, turn);
+    mat4.rotateY(this.coordFrame, this.coordFrame, radians);
   }
 }

@@ -11,7 +11,7 @@ class Windshield extends BasicShape {
     this.windshield = new Cube(gl, .4, 1, false, white, white);
 
     let windshieldScale = mat4.create();
-    mat4.scale(windshieldScale, windshieldScale, vec3.fromValues(0.85, 1, 0.02));
+    mat4.scale(windshieldScale, windshieldScale, vec3.fromValues(0.80, 0.9, 0.02));
 
     let windshieldRotate = mat4.create();
     mat4.rotateY(windshieldRotate, windshieldRotate, Math.PI/3.75);
