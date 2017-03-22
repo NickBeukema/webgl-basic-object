@@ -1,24 +1,32 @@
 /**
  * Created by Nick Beukema and Kevin Anderson
  */
-var gl;
+let gl;
 let canvas;
-var textOut;
-var orthoProjMat, persProjMat, viewMat, topViewMat, carCF, sideViewMat, frontViewMat;
-var axisBuff, tmpMat;
-var globalAxes;
+let orthoProjMat, persProjMat, viewMat, topViewMat, carCF, sideViewMat, frontViewMat;
+let normalMat;
+let axisBuff, tmpMat;
+let globalAxes;
 
-var parkingLot;
 
-let posAttr, colAttr, modelUnif;
-var projUnif, viewUnif;
+// Vertex shader attributes
+let posAttr, colAttr, normalAttr;
+
+
+// Shader uniform variables
+let modelUnif, projUnif, viewUnif, lightPosUnif;
+let objAmbientUnif, objTintUnif, normalUnif, isEnabledUnif;
+let lightPos, useLightingUnif;
 
 const IDENTITY = mat4.create();
-let obj;
-let currentView = 0;
+let obj, parkingLot;
+let lineBuff, normalBuff, objTint, pointLight
+let shaderProg, redrawNeeded, showNormal;
+let lightingComponentEnabled = [true, true, true];
 
-var coneSpinAngle;
-var shaderProg;
+
+// View application variables
+let currentView = 0;
 
 let addCarButton, carSelectionMenu;
 let cars = [];
@@ -37,7 +45,6 @@ function main() {
   carSelectionMenu.addEventListener('change', selectCar);
 
   gl = WebGLUtils.create3DContext(canvas, null);
-
 
   canvas.addEventListener('mousedown', handleMouseDown);
   canvas.addEventListener('mouseup', handleMouseUp);
@@ -60,18 +67,28 @@ function main() {
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     gl.enable (gl.DEPTH_TEST);
-    gl.enable(gl.BLEND);
-    gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
 
     posAttr = gl.getAttribLocation(prog, "vertexPos");
     colAttr = gl.getAttribLocation(prog, "vertexCol");
+    normalAttr = gl.getAttribLocation(prog, "vertexNormal");
+
     projUnif = gl.getUniformLocation(prog, "projection");
     viewUnif = gl.getUniformLocation(prog, "view");
     modelUnif = gl.getUniformLocation(prog, "modelCF");
 
+    lightPosUnif = gl.getUniformLocation(prog, "lightPosWorld");
+    normalUnif = gl.getUniformLocation(prog, "normalMat");
+    useLightingUnif = gl.getUniformLocation (prog, "useLighting");
+
+    objTintUnif = gl.getUniformLocation(prog, "objectTint");
+    ambCoeffUnif = gl.getUniformLocation(prog, "ambientCoeff");
+    diffCoeffUnif = gl.getUniformLocation(prog, "diffuseCoeff");
+    specCoeffUnif = gl.getUniformLocation(prog, "specularCoeff");
+    shininessUnif = gl.getUniformLocation(prog, "shininess");
+    isEnabledUnif = gl.getUniformLocation(prog, "isEnabled");
+
     gl.enableVertexAttribArray(posAttr);
-    gl.enableVertexAttribArray(colAttr);
 
     orthoProjMat = mat4.create();
     persProjMat = mat4.create();
@@ -80,10 +97,16 @@ function main() {
     sideViewMat = mat4.create();
     frontViewMat = mat4.create();
     carCF = mat4.create();
+
+
+    normalMat = mat3.create();
+
+    lightCF = mat4.create();
     tmpMat = mat4.create();
 
     mat4.lookAt(viewMat,
-        vec3.fromValues(10, 10, 7), /* eye */
+        //vec3.fromValues(10, 10, 7), [> eye <]
+        vec3.fromValues(1, 1, 1), /* eye */
         vec3.fromValues(0, 0, 0), /* focal point */
         vec3.fromValues(0, 0, 1)); /* up */
 
@@ -102,10 +125,36 @@ function main() {
         vec3.fromValues(0,0,0),
         vec3.fromValues(0,0,1));
 
-    globalAxes = new Axes(gl);
 
+    gl.uniformMatrix4fv(modelUnif, false, IDENTITY);
+    lightPos = vec3.fromValues(2, 2, 2);
+    mat4.fromTranslation(lightCF, lightPos);
+    gl.uniform3fv(lightPosUnif, lightPos);
 
-    parkingLot = new ParkingLot(gl);
+    objTint = vec3.fromValues(0.9, 0.9, 0.9);
+    gl.uniform3fv(objTintUnif, objTint);
+    console.log(objTint);
+
+    let ambCoeffSlider = Math.random() * 0.2;
+    gl.uniform1f(ambCoeffUnif, ambCoeffSlider);
+
+    let diffCoeffSlider = 0.5 + 0.5 * Math.random();  // random in [0.5, 1.0]
+    gl.uniform1f(diffCoeffUnif, diffCoeffSlider);
+
+    let specCoeffSlider = Math.random();
+    gl.uniform1f(specCoeffUnif, specCoeffSlider);
+
+    let shinySlider = Math.floor(1 + Math.random() * 128);
+    gl.uniform1f(shininessUnif, shinySlider);
+
+    //globalAxes = new Axes(gl);
+
+    gl.uniform3iv (isEnabledUnif, [true, true, true]);
+
+    //parkingLot = new ParkingLot(gl);
+    addCar();
+    let yellow = vec3.fromValues (0xe7/255, 0xf2/255, 0x4d/255);
+    pointLight = new Sphere(gl, 0.02, 30, 30, false, yellow, yellow);
 
 
     /* calculate viewport */
@@ -168,12 +217,31 @@ function renderViewCoords(pageX, pageY, radius) {
 
 function drawScene() {
   //globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
-  parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
+  //parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
+
+  gl.uniform1i (useLightingUnif, false);
+  gl.disableVertexAttribArray(normalAttr);
+  gl.enableVertexAttribArray(colAttr);
+
+  pointLight.draw(posAttr, colAttr, modelUnif, lightCF);
 
 
+  gl.uniform1i (useLightingUnif, true);
+  gl.disableVertexAttribArray(colAttr);
+  gl.enableVertexAttribArray(normalAttr);
   for (var i = cars.length - 1; i >= 0; i--) {
+    mat4.mul (tmpMat, viewMat, cars[i].temp);
+    mat3.normalFromMat4 (normalMat, tmpMat);
+    gl.uniformMatrix3fv (normalUnif, false, normalMat);
+
     gl.uniformMatrix4fv(modelUnif, false, cars[i].coordFrame);
-    cars[i].draw(posAttr, colAttr, modelUnif, cars[i].temp);
+    cars[i].draw(posAttr, normalAttr, modelUnif, cars[i].temp);
+
+    //gl.uniform1i (useLightingUnif, false);
+    //gl.disableVertexAttribArray(normalAttr);
+    //gl.enableVertexAttribArray(colAttr);
+
+    //cars[i].drawNormal(posAttr, colAttr, modelUnif, cars[i].temp);
   }
 }
 
@@ -220,7 +288,10 @@ function resizeHandler() {
 
 function draw3D() {
   gl.uniformMatrix4fv(projUnif, false, persProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, viewMat)
+  gl.uniformMatrix4fv(viewUnif, false, viewMat);
+
+
+
   gl.viewport(0, 0, canvas.width, canvas.height);
   drawScene();
 }
@@ -241,13 +312,15 @@ function drawFrontView() {
 
 function drawTopView() {
   gl.uniformMatrix4fv(projUnif, false, orthoProjMat);
-  gl.uniformMatrix4fv(viewUnif, false, topViewMat);
+  gl.uliformMatrix4fv(viewUnif, false, topViewMat);
   gl.viewport(0, 0, canvas.width, canvas.height);
   drawScene();
 }
 
 function addCar() {
   let car = new Car(gl);
+  //let car = new FrontDoor(gl);
+  //let car = new Cube(gl, 0.5, 4, false);
 
   if(cars.length % 12 == 0 && cars.length != 0) {
     startingY = -4.6;
@@ -257,9 +330,6 @@ function addCar() {
   let xTranslate = mat4.create();
   let xTranslateVec = vec3.fromValues(startingX, startingY, 0);
   mat4.translate(xTranslate, xTranslate, xTranslateVec);
-
-
-  car.modify(xTranslate);
 
 
   startingY = startingY + offset;

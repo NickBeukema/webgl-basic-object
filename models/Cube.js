@@ -11,6 +11,12 @@ class Cube {
    */
   constructor (gl, size, subDiv, wireframe = false, col1, col2) {
 
+    this.temp = mat4.create();
+    this.coordFrame = mat4.create();
+    this.NORMAL_SCALE = 0.2;
+    this.normalCount = 0;
+
+
     /* if colors are undefined, generate random colors */
     if (typeof col1 === "undefined") col1 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
     if (typeof col2 === "undefined") col2 = vec4.fromValues(Math.random(), Math.random(), Math.random(), 1);
@@ -21,8 +27,11 @@ class Cube {
       primitive1 = gl.LINE_LOOP;
     }
 
-    let randColor = vec3.create();
+    //let randColor = vec3.create();
+    let randColor = vec3.fromValues(1,1,1);
     let vertices = [];
+    let normalLines = [];
+
     this.vbuff = gl.createBuffer();
 
     /* Instead of allocating two separate JS arrays (one for position and one for color),
@@ -36,7 +45,6 @@ class Cube {
 
     let faceTable = [];
 
-
     // Generate 3D points for the first face
     let firstFaceVertices = [];
     let faceVertices = [];
@@ -46,11 +54,6 @@ class Cube {
         let y = (segmentLength * (subDiv - j)) - halfSize;
 
         let point = vec3.fromValues(x, y, halfSize);
-
-        faceVertices.push(point[0], point[1], point[2]);
-        vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
-
         firstFaceVertices.push(point);
       }
     }
@@ -60,6 +63,7 @@ class Cube {
     // rotated to their correct face position
 
     let origin = vec3.create();
+    let normalVector = vec3.fromValues(0,0,1);
 
     // Rotate around the Y axis for the 3 latitudinal sides
     for(let i = 0; i<4; i++) {
@@ -67,11 +71,21 @@ class Cube {
         let p = vec3.rotateY(vec3.create(), vertex, origin, i * (Math.PI/2));
         faceVertices.push(p[0], p[1], p[2]);
 
-        vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
+        faceVertices.push(normalVector[0], normalVector[1], normalVector[2]);
+
+        normalLines.push(p[0], p[1], p[2], 1, 1, 1);  /* (x,y,z)   (r,g,b) */
+        normalLines.push (
+          p[0] + this.NORMAL_SCALE * normalVector[0],
+          p[1] + this.NORMAL_SCALE * normalVector[1],
+          p[2] + this.NORMAL_SCALE * normalVector[2], 1, 1, 1);
+
+        this.normalCount += 1;
+
       });
+      vec3.rotateY(normalVector, normalVector, origin, Math.PI/2);
     }
 
+    normalVector = vec3.fromValues(0,-1,0);
     // Rotate around the X axis for the remaining 2 longitudinal sides
     for(let i = 0; i<2; i++) {
       firstFaceVertices.forEach((vertex) => {
@@ -79,14 +93,28 @@ class Cube {
         let p = vec3.rotateX(vec3.create(), vertex, origin, negativeModifier * (Math.PI/2));
         faceVertices.push(p[0], p[1], p[2]);
 
-        vec3.lerp (randColor, col1, col2, Math.random());
-        faceVertices.push(randColor[0], randColor[1], randColor[2], transparency);
+        faceVertices.push(normalVector[0], normalVector[1], normalVector[2]);
+
+        normalLines.push(p[0], p[1], p[2], 1, 1, 1);  /* (x,y,z)   (r,g,b) */
+        normalLines.push (
+          p[0] + this.NORMAL_SCALE * normalVector[0],
+          p[1] + this.NORMAL_SCALE * normalVector[1],
+          p[2] + this.NORMAL_SCALE * normalVector[2], 1, 1, 1);
+
+        this.normalCount += 1;
+
       });
+      vec3.rotateX(normalVector, normalVector, origin, Math.PI);
     }
 
     // Copy the (x,y,z,r,g,b) sixtuplet into GPU buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbuff);
     gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from(faceVertices), gl.STATIC_DRAW);
+
+    // Copy normal vectors into a buffer
+    this.nbuff = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.nbuff);
+    gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from(normalLines), gl.STATIC_DRAW);
 
 
     this.indices = [];
@@ -94,7 +122,7 @@ class Cube {
     // Push the points to build each face with
     // triangle strip
 
-    for(let i = 0; i <= 6; i++) {
+    for(let i = 0; i < 6; i++) {
       let startIndex = Math.pow(subDiv + 1, 2) * i;
 
       for(let j = 0; j < subDiv; j++) {
@@ -123,6 +151,7 @@ class Cube {
       }
     }
 
+
   }
 
   /**
@@ -141,8 +170,8 @@ class Cube {
 
     /* with the "packed layout"  (x,y,z,r,g,b),
        the stride distance between one group to the next is 24 bytes */
-    gl.vertexAttribPointer(vertexAttr, 3, gl.FLOAT, false, 28, 0); /* (x,y,z) begins at offset 0 */
-    gl.vertexAttribPointer(colorAttr, 4, gl.FLOAT, false, 28, 12); /* (r,g,b) begins at offset 12 */
+    gl.vertexAttribPointer(vertexAttr, 3, gl.FLOAT, false, 24, 0); /* (x,y,z) begins at offset 0 */
+    gl.vertexAttribPointer(colorAttr, 3, gl.FLOAT, false, 24, 12); /* (r,g,b) begins at offset 12 */
 
     for (let k = 0; k < this.indices.length; k++) {
       let obj = this.indices[k];
@@ -150,4 +179,16 @@ class Cube {
       gl.drawElements(obj.primitive, obj.numPoints, gl.UNSIGNED_SHORT, 0);
     }
   }
+
+  drawNormal (vertexAttr, colorAttr, modelUniform, coordFrame) {
+    if (this.normalCount > 0) {
+      gl.uniformMatrix4fv(modelUniform, false, coordFrame);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.nbuff);
+      gl.vertexAttribPointer(vertexAttr, 3, gl.FLOAT, false, 24, 0);
+      gl.vertexAttribPointer(colorAttr, 3, gl.FLOAT, false, 24, 12);
+      gl.drawArrays(gl.LINES, 0, this.normalCount * 2);
+    }
+  }
+
+
 }
