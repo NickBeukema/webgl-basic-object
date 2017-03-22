@@ -51,6 +51,11 @@
 <body onload="main()">
   <div>
     <p style="display: inline; color: white;">Move Car: W, A, S, D  Move View: I, K</p>
+    <p style="display: inline; color: white; padding-left: 20px;">
+      <label for="amb-check">Ambient<input id="amb-check" type="checkbox" checked></label>
+      <label for="diff-check">Diffuse<input id="diff-check" type="checkbox" checked></label>
+      <label for="spec-check">Specular<input id="spec-check" type="checkbox" checked></label>
+    </p>
   </div>
   <canvas id="gl-canvas" class="canvas" width='1920' height="600"></canvas>
 </body>

@@ -29,7 +29,8 @@ const IDENTITY = mat4.create();
 let currentCar, parkingLot;
 let lineBuff, normalBuff, objTint, pointLight
 let shaderProg, redrawNeeded, showNormal;
-let lightingComponentEnabled = [true, true, true];
+let lightingComponentEnabled;
+let showAmbient = showDiffuse = showSpecular = true;
 
 
 // View application variables
@@ -48,6 +49,26 @@ function main() {
   canvas.addEventListener('mouseup', handleMouseUp);
   canvas.addEventListener('mousemove', handleMouseMove);
   canvas.addEventListener('mousewheel', handleScroll);
+
+  let ambientCheckbox = document.getElementById("amb-check");
+  let diffuseCheckbox = document.getElementById("diff-check");
+  let specularCheckbox = document.getElementById("spec-check");
+
+  ambientCheckbox.addEventListener('change', ev => {
+    showAmbient = ev.target.checked;
+    document.activeElement.blur();
+  });
+
+  diffuseCheckbox.addEventListener('change', ev => {
+    showDiffuse = ev.target.checked;
+    document.activeElement.blur();
+  });
+
+  specularCheckbox.addEventListener('change', ev => {
+    showSpecular = ev.target.checked;
+    document.activeElement.blur();
+  });
+
 
   axisBuff = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, axisBuff);
@@ -131,7 +152,7 @@ function main() {
 
     //globalAxes = new Axes(gl);
 
-    gl.uniform3iv (isEnabledUnif, [true, true, true]);
+    gl.uniform3iv (isEnabledUnif, [showAmbient, showDiffuse, showSpecular]);
 
     parkingLot = new ParkingLot(gl);
     currentCar = new Car(gl);
@@ -162,6 +183,7 @@ function drawScene() {
   pointLight.draw(posAttr, colAttr, modelUnif, lightCF2);
   gl.uniform3fv(lightPosUnif, [...lightPos, ...lightPos2]);
 
+  gl.uniform3iv (isEnabledUnif, [showAmbient, showDiffuse, showSpecular]);
 
   // Enable lighting and disable manual coloring
   gl.uniform1i (useLightingUnif, true);
@@ -259,7 +281,7 @@ function reactToKeys() {
     turnDirection = 1;
   }
 
-  currentCar.triggerAnimation(currentSpeed/2, turnDirection);
+  currentCar.triggerAnimation(currentSpeed/3, turnDirection);
 
   if(keyMap[keys.w]) {
     let negXTranslate = mat4.create();
