@@ -8,6 +8,26 @@ class Car extends BasicShape {
     this.carWidth = 0.5;
     this.carLength = 1.5;
 
+    this.cameraPos = vec3.fromValues(4, 0, 2);
+    this.focalPoint = vec3.fromValues(0, 0, 0);
+
+
+
+    let defaultLighting = {
+      tint: vec3.fromValues(0.9, 0.0, 0.0),
+      shinyness: 30,
+      diffCoeff: 0.8,
+      specCoeff: 0.6
+    };
+
+    let wheelWellLighting = {
+      tint: vec3.fromValues(0.2, 0.2, 0.2),
+      shinyness: 20,
+      diffCoeff: 0.8,
+      specCoeff: 0.2
+    };
+
+
     //
     // Tires
     //
@@ -53,7 +73,7 @@ class Car extends BasicShape {
 
     this.hoodTransform = hoodTranslate;
 
-    this.addPartToList(this.hood, this.hoodTransform);
+    this.addPartToList(this.hood, this.hoodTransform, defaultLighting);
 
 
     //
@@ -65,7 +85,7 @@ class Car extends BasicShape {
     this.frontBumperTranslate = mat4.create();
     mat4.translate(this.frontBumperTransform, this.frontBumperTranslate, vec3.fromValues(-this.carLength/2 - 0.183, 0, 0.13));
 
-    this.addPartToList(this.frontBumper, this.frontBumperTransform);
+    this.addPartToList(this.frontBumper, this.frontBumperTransform, defaultLighting);
 
 
     //
@@ -110,7 +130,9 @@ class Car extends BasicShape {
     mat4.translate(this.rearRightWheelWellTransform, this.rearRightWheelWellTransform, vec3.fromValues(rearFenderX - 0.25, rearFenderY, rearFenderZ));
 
     this.addPartToList(this.rearRightFender, this.rearRightFenderTranslate);
-    this.addPartToList(this.rearRightWheelWell, this.rearRightWheelWellTransform);
+
+
+    this.addPartToList(this.rearRightWheelWell, this.rearRightWheelWellTransform, wheelWellLighting);
 
 
     let rearLeftTranslateVector = vec3.fromValues(rearFenderX, -rearFenderY, rearFenderZ);
@@ -133,8 +155,8 @@ class Car extends BasicShape {
     mat4.mul(this.rearLeftWheelWellTransform, rearLeftWheelWellTranslate, rearLeftWheelWellRotate);
 
 
-    this.addPartToList(this.rearLeftFender, this.rearLeftFenderTranslate);
     this.addPartToList(this.rearLeftWheelWell, this.rearLeftWheelWellTransform);
+    this.addPartToList(this.rearLeftFender, this.rearLeftFenderTranslate, defaultLighting);
 
     //
     // Front Fenders and Wheel Wells
@@ -150,7 +172,7 @@ class Car extends BasicShape {
     mat4.translate(this.frontRightWheelWellTransform, this.frontRightWheelWellTransform, frontRightTranslateVector);
 
     this.addPartToList(this.frontRightFender, this.frontRightFenderTranslate);
-    this.addPartToList(this.frontRightWheelWell, this.frontRightWheelWellTransform);
+    this.addPartToList(this.frontRightWheelWell, this.frontRightWheelWellTransform, wheelWellLighting);
 
 
 
@@ -171,8 +193,8 @@ class Car extends BasicShape {
 
     mat4.mul(this.frontLeftWheelWellTransform, frontLeftWheelWellTranslate, frontLeftWheelWellRotate);
 
-    this.addPartToList(this.frontLeftFender, this.frontLeftFenderTranslate);
     this.addPartToList(this.frontLeftWheelWell, this.frontLeftWheelWellTransform);
+    this.addPartToList(this.frontLeftFender, this.frontLeftFenderTranslate, defaultLighting);
 
 
     //
@@ -242,27 +264,40 @@ class Car extends BasicShape {
 
 
     this.addPartToList(this.floor, this.floorTranslate);
-    
+
     //
     // Roof
     //
 
-    this.roof = new Roof(gl);
+    this.roof = new Roof(gl, defaultLighting);
     this.roofTransform = mat4.create();
     let roofTranslateVec = vec3.fromValues(0,0,0.5);
     mat4.translate(this.roofTransform, this.roofTransform, roofTranslateVec);
 
     this.addPartToList(this.roof, this.roofTransform);
 
-    //
+
     // Move Car so tires start at z=0
-    //
-    
     let setMatrixTranslateVec = vec3.fromValues(0,0,0.13);
     mat4.translate(this.temp, this.temp, setMatrixTranslateVec);
+    this.modify(mat4.create());
   }
 
   modify(mat4Modifier) {
     mat4.mul(this.temp, this.temp, mat4Modifier);
+  }
+
+  changeView(vec3Operation) {
+    vec3Operation(this.focalPoint, this.focalPoint, this.cameraPos);
+    vec3Operation(this.cameraPos, this.focalPoint, this.cameraPos);
+  }
+
+  changeCamera(vec3Operation) {
+    vec3Operation(this.cameraPos);
+  }
+
+
+  animate() {
+
   }
 }

@@ -27,24 +27,51 @@ class BasicShape {
     return vec3.fromValues(percent, percent, percent);
   }
 
-  addPartToList(object, transform) {
+  addPartToList(object, transform, lighting = {}) {
     this.parts.push({
       object: object,
-      transform: transform
+      transform: transform,
+      tint: lighting.tint,
+      ambCoeff: lighting.ambCoeff,
+      diffCoeff: lighting.diffCoeff,
+      shinyness: lighting.shiny,
+      specCoeff: lighting.specCoeff
+
     });
   }
 
-  draw(vertexAttr, colorAttr, modelUniform, coordFrame, tintUnif) {
+  draw(vertexAttr, colorAttr, modelUniform, coordFrame, lightingUnifs, posUnifs, viewMat) {
     this.parts.forEach(part => {
+
       if(part.tint) {
-        gl.uniform3fv(tintUnif, part.tint);
+        gl.uniform3fv(lightingUnifs.tintUnif, part.tint);
+      }
+
+      if(part.shinyness) {
+        gl.uniform1f(lightingUnifs.shininessUnif, part.shinyness);
+      }
+
+      if(part.specCoeff) {
+        gl.uniform1f(lightingUnifs.specCoeffUnif, part.specCoeff);
+      }
+
+      if(part.diffCoeff) {
+        gl.uniform1f(lightingUnifs.diffCoeffUnif, part.diffCoeff);
+      }
+
+      if(part.ambCoeff) {
+        gl.uniform1f(lightingUnifs.ambCoeffUnif, part.ambCoeff);
       }
 
       mat4.mul(this.tmp, coordFrame, part.transform);
-      part.object.draw(vertexAttr, colorAttr, modelUniform, this.tmp, tintUnif);
-      if(part.object.drawNormal) {
-        this.normals.push(part.object);
-      }
+
+      let tmpMat = mat4.create();
+      let normalMat = mat3.create();
+      mat4.mul (tmpMat, viewMat, this.tmp);
+      mat3.normalFromMat4 (normalMat, tmpMat);
+      gl.uniformMatrix3fv (posUnifs.normalUnif, false, normalMat);
+
+      part.object.draw(vertexAttr, colorAttr, modelUniform, this.tmp, lightingUnifs, posUnifs, viewMat);
     });
   }
 

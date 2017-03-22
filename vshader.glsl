@@ -7,7 +7,8 @@ uniform mat4 view;
 uniform mat4 modelCF;
 uniform mat3 normalMat;
 
-uniform vec3 lightPosWorld;
+uniform vec3 lightPosWorld[2];
+
 uniform float diffuseCoeff;
 uniform float ambientCoeff;
 uniform float specularCoeff;
@@ -24,32 +25,38 @@ void main() {
 
   // Calculate vertex and light position in relation to eye and camera CF
   vec4 vertexPosInEye = view * modelCF * vec4(vertexPos, 1);
-  vec4 lightPosInEye = view * vec4(lightPosWorld, 1);
   gl_Position = projection * vertexPosInEye;
 
   if (useLighting) {
-    // Calculate light with relation to model CF
+
+    /*int lightCount = 2;*/
+
     vec3 color = vec3(0,0,0);
-    vec3 lightVecInEye = normalize(vec3(lightPosInEye - vertexPosInEye));
-    vec3 normalInEye = normalize(normalMat * vertexNormal);
+    for(int i = 0; i < 2; i++) {
+      vec4 lightPosInEye = view * vec4(lightPosWorld[i], 1);
 
-    // Ambient Light
-    if (isEnabled[0]) {
-      color += ambientCoeff * objectTint;
-    }
+      // Calculate light with relation to model CF
+      vec3 lightVecInEye = normalize(vec3(lightPosInEye - vertexPosInEye));
+      vec3 normalInEye = normalize(normalMat * vertexNormal);
 
-    // Diffuse Light
-    if (isEnabled[1]) {
-      float diffuse = clamp(dot(lightVecInEye, normalInEye), 0.0, 1.0);
-      color += diffuse * diffuseCoeff * objectTint;
-    }
+      // Ambient Light
+      if (isEnabled[0]) {
+        color += ambientCoeff * objectTint;
+      }
 
-    // Specular Light
-    if (isEnabled[2]) {
-      vec3 viewVec = normalize(-vertexPosInEye.xyz); // Viewer is now at (0,0,0)
-      vec3 reflectVec = reflect(-lightVecInEye, normalInEye);
-      float specular = clamp(dot(viewVec, reflectVec), 0.0, 1.0);
-      color += pow(specular, shininess) * specularCoeff * vec3(1,1,1);
+      // Diffuse Light
+      if (isEnabled[1]) {
+        float diffuse = clamp(dot(lightVecInEye, normalInEye), 0.0, 1.0);
+        color += diffuse * diffuseCoeff * objectTint;
+      }
+
+      // Specular Light
+      if (isEnabled[2]) {
+        vec3 viewVec = normalize(-vertexPosInEye.xyz); // Viewer is now at (0,0,0)
+        vec3 reflectVec = reflect(-lightVecInEye, normalInEye);
+        float specular = clamp(dot(viewVec, reflectVec), 0.0, 1.0);
+        color += pow(specular, shininess) * specularCoeff * vec3(1,1,1);
+      }
     }
 
     varColor = vec4 (color, 1);

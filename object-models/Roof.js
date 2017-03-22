@@ -3,7 +3,7 @@ class Roof extends BasicShape {
    * Create a Roof
    * @param {Object} gl         the current WebGL context
    */
-  constructor (gl) {
+  constructor (gl, lighting) {
     super(gl);
 
 
@@ -70,10 +70,12 @@ class Roof extends BasicShape {
     mat4.mul(this.leftRearPostTransform, leftRearPostTranslate, leftRearPostRotate);
 
 
-    this.addPartToList(this.rightFrontPost, this.rightFrontPostTransform);
-    this.addPartToList(this.leftFrontPost, this.leftFrontPostTransform);
-    this.addPartToList(this.rightRearPost, this.rightRearPostTransform);
-    this.addPartToList(this.leftRearPost, this.leftRearPostTransform);
+    let windowLighting = {
+      tint: vec3.fromValues(0.7, 0.7, 0.7),
+      shinyness: 90,
+      diffCoeff: 0.4,
+      specCoeff: 0.9
+    }
 
 
     // Front Windshield
@@ -86,7 +88,7 @@ class Roof extends BasicShape {
     mat4.translate(frontWindshieldTranslate, frontWindshieldTranslate, vec3.fromValues(frontPostTranslateX + 0.11, 0, frontPostTranslateZ/2));
     mat4.mul(this.frontWindshieldTransform, frontWindshieldTranslate, frontWindshieldRotate);
 
-    this.addPartToList(this.frontWindshield, this.frontWindshieldTransform);
+    this.addPartToList(this.frontWindshield, this.frontWindshieldTransform, windowLighting);
 
 
 
@@ -97,5 +99,10 @@ class Roof extends BasicShape {
     mat4.translate(this.rearWindshieldTransform, this.rearWindshieldTransform, vec3.fromValues(-frontPostTranslateX - 0.11, 0, frontPostTranslateZ/2));
 
     this.addPartToList(this.rearWindshield, this.rearWindshieldTransform);
+
+    this.addPartToList(this.rightFrontPost, this.rightFrontPostTransform, lighting);
+    this.addPartToList(this.leftFrontPost, this.leftFrontPostTransform);
+    this.addPartToList(this.rightRearPost, this.rightRearPostTransform);
+    this.addPartToList(this.leftRearPost, this.leftRearPostTransform);
   }
 }

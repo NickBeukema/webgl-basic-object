@@ -38,6 +38,8 @@
   <script src="object-models/FrontDoor.js"></script>
   <script src="object-models/Floor.js"></script>
 
+  <script src="models/Surface.js"></script>
+
   <script src="models/Car.js"></script>
   <script src="models/ParkingLot.js"></script>
 
@@ -47,9 +49,7 @@
 </head>
 <body onload="main()">
   <div>
-    <select id="carSelectionMenu"></select>
-    <button id='addCar'>Add Car</button>
-    <p style="display: inline; color: white;">Controls Translate: Q, W, E, A, S, D  Rotate: U, I , O, J, K, L</p>
+    <p style="display: inline; color: white;">Move Car: W, A, S, D  Move View: I, K</p>
   </div>
   <canvas id="gl-canvas" class="canvas" width='1920' height="600"></canvas>
 </body>

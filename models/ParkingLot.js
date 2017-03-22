@@ -8,36 +8,34 @@ class ParkingLot extends BasicShape {
     this.carWidth = 0.5;
     this.carLength = 1.5;
 
-    let parkingLotSize = 10;
-    let parkingLotZScale = parkingLotSize/10000;
-    //let parkingLotZTranslate = (-parkingLotSize/1) ;
-    let parkingLotZTranslate = 0;
+    let parkingLotSize = 100;
 
-    let parkingLotBase = new Cube(gl, parkingLotSize, 1, false, this.grey, this.grey);
+    let parkingLotBase = new Surface(gl, parkingLotSize, 10);
     let parkingLotBaseScale = mat4.create();
     let parkingLotBaseTranslate = mat4.create();
 
-    mat4.scale(parkingLotBaseScale, parkingLotBaseScale, vec3.fromValues(1,1,parkingLotZScale));
-    mat4.translate(parkingLotBaseTranslate, parkingLotBaseTranslate, vec3.fromValues(0,0, parkingLotZTranslate));
+    let pavementTint = vec3.fromValues(0.3, 0.3, 0.3);
+    let pavementShinyness = 10;
 
-    let parkingLotBaseTransform = mat4.create();
-
-    mat4.mul(parkingLotBaseTransform, parkingLotBaseScale, parkingLotBaseTranslate);
-
-    this.addPartToList(parkingLotBase, parkingLotBaseTransform);
-
+    this.addPartToList(parkingLotBase, mat4.create(), {
+      tint: pavementTint,
+      shinyness: pavementShinyness,
+      specCoeff: 0.05
+    });
 
 
     let lineX = 4.3;
     let lineY = -124;
-    let lineZ = 0;
+    let lineZ = 0.01;
+    let lineTint = vec3.fromValues(0.8, 0.8, 0.8);
 
     for(let i = 0; i < 4; i++) {
       for(let j = 0; j < 13; j++) {
-        let line = new Cube(gl, 1.4, 1, false, this.white9, this.white9);
+        //let line = new Cube(gl, 1.4, 1, false, this.white9, this.white9);
+        let line = new Surface(gl, 1.4, 1);
 
         let lineScale = mat4.create();
-        mat4.scale(lineScale, lineScale, vec3.fromValues(1, 0.04, 0.01));
+        mat4.scale(lineScale, lineScale, vec3.fromValues(1, 0.04, 1));
 
         let lineTranslate = mat4.create();
         mat4.translate(lineTranslate, lineTranslate, vec3.fromValues(lineX, lineY, lineZ));
@@ -45,7 +43,9 @@ class ParkingLot extends BasicShape {
         let lineTransform = mat4.create();
         mat4.mul(lineTransform, lineScale, lineTranslate);
 
-        this.addPartToList(line, lineTransform);
+        this.addPartToList(line, lineTransform, {
+          tint: lineTint
+        });
 
         lineY += 20.7;
       }
