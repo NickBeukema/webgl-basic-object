@@ -36,15 +36,16 @@ class BasicShape {
 
   draw(vertexAttr, colorAttr, modelUniform, coordFrame, tintUnif) {
     this.parts.forEach(part => {
-      if(part.tint) {
-        gl.uniform3fv(tintUnif, part.tint);
-      }
+      //if(part.tint) {
+        //gl.uniform3fv(tintUnif, part.tint);
+      //}
 
       mat4.mul(this.tmp, coordFrame, part.transform);
       part.object.draw(vertexAttr, colorAttr, modelUniform, this.tmp, tintUnif);
-      if(part.object.drawNormal) {
-        this.normals.push(part.object);
-      }
+
+      //if(part.object.drawNormal) {
+        //this.normals.push(part.object);
+      //}
     });
   }
 

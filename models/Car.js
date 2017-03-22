@@ -243,7 +243,7 @@ class Car extends BasicShape {
 
 
     this.addPartToList(this.floor, this.floorTranslate);
-    
+
     //
     // Roof
     //
@@ -258,7 +258,7 @@ class Car extends BasicShape {
     //
     // Move Car so tires start at z=0
     //
-    
+
     let setMatrixTranslateVec = vec3.fromValues(0,0,0.13);
     mat4.translate(this.temp, this.temp, setMatrixTranslateVec);
     this.modify(mat4.create());

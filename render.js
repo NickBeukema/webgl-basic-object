@@ -102,7 +102,6 @@ function main() {
 
     objTint = vec3.fromValues(0.9, 0.9, 0.9);
     gl.uniform3fv(objTintUnif, objTint);
-    console.log(objTint);
 
     let ambCoeffSlider = Math.random() * 0.2;
     gl.uniform1f(ambCoeffUnif, ambCoeffSlider);
@@ -142,7 +141,7 @@ let viewRangeMultiplier = 20;
 
 function drawScene() {
   //globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
-  parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
+  //parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
 
   gl.uniform1i (useLightingUnif, false);
   gl.disableVertexAttribArray(normalAttr);
@@ -155,24 +154,8 @@ function drawScene() {
   gl.disableVertexAttribArray(colAttr);
   gl.enableVertexAttribArray(normalAttr);
 
-  //currentCar.animate();
-  //gl.uniformMatrix4fv(modelUnif, false, currentCar.coordFrame);
-  //currentCar.draw(posAttr, colAttr, modelUnif, currentCar.temp);
-
-  //for (var i = cars.length - 1; i >= 0; i--) {
-    //mat4.mul (tmpMat, viewMat, cars[i].temp);
-    //mat3.normalFromMat4 (normalMat, tmpMat);
-    //gl.uniformMatrix3fv (normalUnif, false, normalMat);
-
-    //gl.uniformMatrix4fv(modelUnif, false, cars[i].coordFrame);
-    //cars[i].draw(posAttr, normalAttr, modelUnif, cars[i].temp);
-
-    ////gl.uniform1i (useLightingUnif, false);
-    ////gl.disableVertexAttribArray(normalAttr);
-    ////gl.enableVertexAttribArray(colAttr);
-
-    ////cars[i].drawNormal(posAttr, colAttr, modelUnif, cars[i].temp);
-  //}
+  gl.uniformMatrix4fv(modelUnif, false, currentCar.coordFrame);
+  currentCar.draw(posAttr, normalAttr, modelUnif, currentCar.temp);
 }
 
 function render(now) {
@@ -191,15 +174,6 @@ function draw3D(now) {
   drawScene(now);
 }
 
-//function drawScene() {
-  //globalAxes.draw(posAttr, colAttr, modelUnif, IDENTITY);
-  //parkingLot.draw(posAttr, colAttr, modelUnif, IDENTITY);
-
-  //currentCar.animate();
-  //gl.uniformMatrix4fv(modelUnif, false, currentCar.coordFrame);
-  //currentCar.draw(posAttr, colAttr, modelUnif, currentCar.temp);
-  ////currentCar.moveCamera();
-//}
 
 function resizeHandler() {
   canvas.width = window.innerWidth;
@@ -225,11 +199,6 @@ function resizeHandler() {
 function addCar() {
   currentCar = new Car(gl);
   //currentCar = new Cube(gl, 0.3, 4);
-}
-
-function code(e) {
-    e = e || window.event;
-    return(e.keyCode || e.which);
 }
 
 let keyMap = {}
