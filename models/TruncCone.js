@@ -25,7 +25,7 @@ class TruncCone {
        so each tuple (x,y,z,r,g,b) describes the properties of a vertex
        */
 
-    let normalVector = vec3.fromValues(0,0,-1);
+    let normalVector = vec3.fromValues(0,0,1);
     for(let i = 0; i <= stacks; i ++) {
       let stackHeight = height * (i/stacks);
       let stackRadius = radiusBottom - (i * ((radiusBottom - radiusTop) / stacks));
@@ -37,7 +37,7 @@ class TruncCone {
       }
 
       if(i === stacks) {
-        normalVector = vec3.fromValues(0,0,1);
+        normalVector = vec3.fromValues(0,0, 1);
         vertices.push(0, 0, stackHeight);
         vertices.push(normalVector[0], normalVector[1], normalVector[2]);
         // vec3.lerp (randColor, col1, col2, Math.random());  linear interpolation between two colors 
