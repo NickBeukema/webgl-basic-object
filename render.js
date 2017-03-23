@@ -246,9 +246,11 @@ document.addEventListener("keyup", onkeyup);
 let keys = {
   w: 87, s: 83, j: 74, l: 76,
   i: 73, k: 75, a: 65, d: 68,
-  u: 85, o: 79,
+  u: 85, o: 79, z: 90, x: 88,
+  c: 67, v: 86, b: 66, n: 78,
   left: 37, right: 39,
-  up: 38, down: 40
+  up: 38, down: 40,
+  del: 46, pgDwn: 34
 }
 
 let keyMap = {}
@@ -395,6 +397,7 @@ function reactToKeys() {
     currentCar.modify(YRotate);
   }
 
+  //light 1
   if(keyMap[keys.left]) {
     lightPos[0] = lightPos[0] + 0.1;
   }
@@ -404,11 +407,44 @@ function reactToKeys() {
   }
 
   if(keyMap[keys.up]) {
-    lightPos2[0] = lightPos2[0] + 0.1;
+    lightPos[1] = lightPos[1] + 0.1;
   }
 
   if(keyMap[keys.down]) {
+    lightPos[1] = lightPos[1] - 0.1;
+  }
+
+  if(keyMap[keys.del]) {
+    lightPos[2] = lightPos[2] + 0.1;
+  }
+
+  if(keyMap[keys.pgDwn]) {
+    lightPos[2] = lightPos[2] - 0.1;
+  }
+
+  //light2
+  if(keyMap[keys.z]) {
+    lightPos2[0] = lightPos2[0] + 0.1;
+  }
+
+  if(keyMap[keys.x]) {
     lightPos2[0] = lightPos2[0] - 0.1;
+  }
+
+  if(keyMap[keys.c]) {
+    lightPos2[1] = lightPos2[1] + 0.1;
+  }
+
+  if(keyMap[keys.v]) {
+    lightPos2[1] = lightPos2[1] - 0.1;
+  }
+
+  if(keyMap[keys.b]) {
+    lightPos2[2] = lightPos2[2] + 0.1;
+  }
+
+  if(keyMap[keys.n]) {
+    lightPos2[2] = lightPos2[2] - 0.1;
   }
 
   updateCameraView();
