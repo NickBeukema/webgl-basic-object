@@ -232,7 +232,7 @@ function resizeHandler() {
     perspectiveRad,    // Angle to view at
     perspectiveRatio,  // Aspect Ratio
     1,                 // near plane at Z=1
-    20);               // far plane at Z=20
+    100);               // far plane at Z=20
 }
 
 
@@ -246,12 +246,10 @@ document.addEventListener("keyup", onkeyup);
 let keys = {
   w: 87, s: 83, j: 74, l: 76,
   i: 73, k: 75, a: 65, d: 68,
+  u: 85, o: 79,
   left: 37, right: 39,
   up: 38, down: 40
 }
-
-
-
 
 let keyMap = {}
 let keysAreRunning = false;
@@ -259,9 +257,6 @@ let startingSpeed = 0;
 let currentSpeed = startingSpeed;
 let maxSpeed = 0.3;
 let speedIncrease = 0.001;
-
-
-
 
 function reactToKeys() {
   if(Object.keys(keyMap).length === 0) { keysAreRunning = false; return; }
@@ -379,6 +374,27 @@ function reactToKeys() {
     currentCar.modify(negXRotate);
   }
 
+  if(keyMap[keys.l]) {
+    let XRotate = mat4.create();
+    mat4.rotateX(XRotate, XRotate, Math.PI / 90);
+
+    currentCar.modify(XRotate);
+  }
+
+  if(keyMap[keys.u]) {
+    let negYRotate = mat4.create();
+    mat4.rotateY(negYRotate, negYRotate, -Math.PI / 90);
+
+    currentCar.modify(negYRotate);
+  }
+
+  if(keyMap[keys.o]) {
+    let YRotate = mat4.create();
+    mat4.rotateY(YRotate, YRotate, Math.PI / 90);
+
+    currentCar.modify(YRotate);
+  }
+
   if(keyMap[keys.left]) {
     lightPos[0] = lightPos[0] + 0.1;
   }
@@ -415,8 +431,6 @@ onkeydown = onkeyup = function(e){
   }
 }
 
-
-
 function updateCameraView() {
   if(currentView === views.followView) {
     mat4.lookAt(viewMat,
@@ -437,12 +451,6 @@ function calcPointedXY(focalPoint, cameraPos, distance) {
 
   return { x: xPointTranslate, y: yPointTranslate };
 }
-
-
-
-
-
-
 
 // Draggable View Utilities
 

@@ -25,25 +25,43 @@ class TruncCone {
        so each tuple (x,y,z,r,g,b) describes the properties of a vertex
        */
 
+    let normalVector = vec3.fromValues(0,0,-1);
     for(let i = 0; i <= stacks; i ++) {
       let stackHeight = height * (i/stacks);
       let stackRadius = radiusBottom - (i * ((radiusBottom - radiusTop) / stacks));
-      if(i === 0 || i === stacks) {
+      if(i === 0) {
         vertices.push(0, 0, stackHeight);
-        vec3.lerp (randColor, col1, col2, Math.random()); /* linear interpolation between two colors */
-        vertices.push(randColor[0], randColor[1], randColor[2]);
+        vertices.push(normalVector[0], normalVector[1], normalVector[2]);
+        // vec3.lerp (randColor, col1, col2, Math.random());  linear interpolation between two colors 
+        // vertices.push(randColor[0], randColor[1], randColor[2]);
+      }
+
+      if(i === stacks) {
+        normalVector = vec3.fromValues(0,0,1);
+        vertices.push(0, 0, stackHeight);
+        vertices.push(normalVector[0], normalVector[1], normalVector[2]);
+        // vec3.lerp (randColor, col1, col2, Math.random());  linear interpolation between two colors 
+        // vertices.push(randColor[0], randColor[1], randColor[2]);
       }
 
       for (let k = 0; k < subDiv; k++) {
         let angle = k * 2 * Math.PI / subDiv;
         let x = stackRadius * Math.cos (angle);
         let y = stackRadius * Math.sin (angle);
+        let z = stackHeight;
+
+        let n1 = vec3.fromValues(-Math.sin(angle), Math.cos(angle), 0);
+        let n2 = vec3.fromValues(radiusBottom - radiusTop, 0, z);
+
+        vec3.cross(normalVector, n1, n2);
+        vec3.normalize(normalVector, normalVector);
 
         /* the first three floats are 3D (x,y,z) position */
-        vertices.push (x, y, stackHeight); 
-        vec3.lerp (randColor, col1, col2, Math.random()); /* linear interpolation between two colors */
-        /* the next three floats are RGB */
-        vertices.push(randColor[0], randColor[1], randColor[2]);
+        vertices.push (x, y, z);
+        vertices.push(normalVector[0], normalVector[1], normalVector[2]);
+        // vec3.lerp (randColor, col1, col2, Math.random()); /* linear interpolation between two colors */
+        // /* the next three floats are RGB */
+        // vertices.push(randColor[0], randColor[1], randColor[2]);
       }
     }
 

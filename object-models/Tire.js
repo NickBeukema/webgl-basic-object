@@ -21,6 +21,13 @@ class Tire extends BasicShape {
       diffCoeff: 0.01,
       specCoeff: 0.1
     }
+
+    let hubCapLighting = {
+      tint: white,
+      shinyness: 90,
+      diffCoeff: 0.6,
+      specCoeff: 0.7
+    }
     //
     // Rubber
     //
@@ -42,7 +49,7 @@ class Tire extends BasicShape {
     this.hubCapTransform = mat4.create();
     mat4.mul(this.hubCapTransform, tireRotate, hubCapScale);
 
-    this.addPartToList(this.hubCap, this.hubCapTransform, defaultLighting);
+    this.addPartToList(this.hubCap, this.hubCapTransform, hubCapLighting);
 
 
     //
@@ -64,8 +71,8 @@ class Tire extends BasicShape {
     this.tireCenterFront = new TruncCone(gl, 0.03, 0.03, 0.01, 10, 1, grey, grey)
     this.tireCenterRear = new TruncCone(gl, 0.03, 0.03, 0.01, 10, 1, grey, grey)
 
-    this.addPartToList(this.tireCenterFront, this.tireCenterFrontTransform);
-    this.addPartToList(this.tireCenterRear, this.tireCenterRearTransform);
+    this.addPartToList(this.tireCenterFront, this.tireCenterFrontTransform, defaultLighting);
+    this.addPartToList(this.tireCenterRear, this.tireCenterRearTransform, defaultLighting);
 
     this.currentTurn = 0;
     this.maxTurn = 0.01;
