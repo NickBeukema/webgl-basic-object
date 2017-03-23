@@ -10,7 +10,7 @@ class ParkingLot extends BasicShape {
 
     let parkingLotSize = 100;
 
-    let parkingLotBase = new Surface(gl, parkingLotSize, 50);
+    let parkingLotBase = new Surface(gl, parkingLotSize, 30);
     let parkingLotBaseScale = mat4.create();
     let parkingLotBaseTranslate = mat4.create();
 
