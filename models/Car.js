@@ -37,21 +37,21 @@ class Car extends BasicShape {
     let tirePosY = (this.carWidth/2.0) - 0.05;
 
 
-    this.frontLeftTire = new Tire(gl, defaultLighting);
+    this.frontLeftTire = new Tire(gl, defaultLighting, "left");
     this.frontLeftTireTranslate = mat4.create();
     mat4.translate(this.frontLeftTireTranslate, this.frontLeftTireTranslate, vec3.fromValues(-tirePosX,-tirePosY, 0));
 
-    this.frontRightTire = new Tire(gl, defaultLighting);
+    this.frontRightTire = new Tire(gl, defaultLighting, "right");
     this.frontRightTireTranslate = mat4.create();
     mat4.translate(this.frontRightTireTranslate, this.frontRightTireTranslate, vec3.fromValues(-tirePosX,tirePosY, 0));
     mat4.rotateZ(this.frontRightTireTranslate, this.frontRightTireTranslate, Math.PI)
 
-    this.rearRightTire = new Tire(gl, defaultLighting);
+    this.rearRightTire = new Tire(gl, defaultLighting, "right");
     this.rearRightTireTranslate = mat4.create();
     mat4.translate(this.rearRightTireTranslate, this.rearRightTireTranslate, vec3.fromValues(tirePosXRear,tirePosY, 0));
     mat4.rotateZ(this.rearRightTireTranslate, this.rearRightTireTranslate, Math.PI)
 
-    this.rearLeftTire = new Tire(gl, defaultLighting);
+    this.rearLeftTire = new Tire(gl, defaultLighting, "left");
     this.rearLeftTireTranslate = mat4.create();
     mat4.translate(this.rearLeftTireTranslate, this.rearLeftTireTranslate, vec3.fromValues(tirePosXRear,-tirePosY, 0));
 

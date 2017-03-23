@@ -3,8 +3,10 @@ class Tire extends BasicShape {
    * Create a Tire
    * @param {Object} gl         the current WebGL context
    */
-  constructor (gl, defaultLighting) {
+  constructor (gl, defaultLighting, carSide) {
     super(gl);
+
+    this.carSide = carSide;
 
     let grey = vec3.fromValues(0.1,0.1,0.1);
     let lighterGrey = vec3.fromValues(0.2,0.2,0.2);
@@ -80,18 +82,9 @@ class Tire extends BasicShape {
   }
 
   animate(distance, turnDirection) {
-    let radians = distance/this.radius;
+    let carSideModifier = this.carSide == 'right' ? -1 : 1;
+    let radians = distance/this.radius * carSideModifier;
 
-    //let turn = (this.maxTurn - Math.abs(this.currentTurn)) * turnDirection;
-
-    //if(Math.abs(turn) > 0.004) {
-      //this.currentTurn = turn;
-    //}
-
-    let turn = turnDirection * this.turnStep;
-
-
-    //mat4.rotateZ(this.coordFrame, this.coordFrame, turn);
     mat4.rotateY(this.coordFrame, this.coordFrame, radians);
   }
 }
